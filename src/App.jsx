@@ -2,25 +2,51 @@ import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Routes, Route } from 'react-router-dom'
+
+// Layouts
+import DashboardLayout from './layouts/DashboardLayout'
+
+// Páginas Públicas
+import LandingPage from './pages/LandingPage'
+import LoginPage from './pages/LoginPage'
+
+// Páginas del Dashboard
+import DashboardHome from './pages/dashboard/DashboardHome'
+import PetsManager from './pages/dashboard/PetsManager'
+import UserProfile from './pages/dashboard/UserProfile'
 
 import './App.css'
 import Profile from './pages/profile/Profile';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <Router>
+ 
+    <div className="app-container">
       <Routes>
-        {/* Esto hace que si entras a la raíz (/), te mande a tu perfil automáticamente */}
-        <Route path="/" element={<Navigate to="/profile" />} />
-
-        {/* Esta es tu ruta específica */}
+        {/* SECCIÓN PÚBLICA */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<Profile />} />
+        {/* SECCIÓN PRIVADA (CON SIDEBAR) */}
+        {/* Todas estas rutas compartirán el DashboardLayout */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          {/* La ruta base /dashboard cargará DashboardHome */}
+          <Route index element={<DashboardHome />} />
+          
+          {/* Sub-rutas internas */}
+          <Route path="pets" element={<PetsManager />} />
+          <Route path="profile" element={<UserProfile />} />
+        </Route>
 
-        {/* Aquí tus compañeros irán agregando sus rutas (Login, Registro, etc.) */}
+        {/* RUTA 404 */}
+        <Route path="*" element={
+          <div className="text-center py-5">
+            <h1>404 - Página no encontrada</h1>
+          </div>
+        } />
       </Routes>
-    </Router>
+    </div>
   )
 }
 
