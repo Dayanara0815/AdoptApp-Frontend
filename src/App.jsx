@@ -1,13 +1,10 @@
-import Navbar from './components/Navbar';
+import CatalogPage from './pages/CatalogPages/CatalogPage';
 
 function App() {
   return (
-    <div>
-      <Navbar />
-      <div className="container mt-4">
-        {/* Aquí irá el contenido de tus páginas más adelante */}
-        <h2>Bienvenido a AdoptApp</h2>
-      </div>
+    <div className="App">
+      {/* Por ahora solo mostramos tu módulo de Catálogo */}
+      <CatalogPage />
     </div>
   );
 }
