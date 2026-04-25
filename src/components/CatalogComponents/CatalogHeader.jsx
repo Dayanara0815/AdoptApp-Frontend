@@ -9,17 +9,8 @@ const CatalogHeader = () => {
             Encuentra a tu nuevo <span className="text-primary fst-italic">compañero</span>.
           </h1>
           <p className="fs-5 text-on-surface-variant" style={{ lineHeight: 1.6 }}>
-            Explora nuestro santuario de animales que esperan un hogar definitivo. Cada mascota aquí está evaluada en salud y temperamento.
+            Explora nuestro santuario de animales que esperan un hogar definitivo.
           </p>
-        </div>
-        
-        <div className="d-flex gap-2 p-1 bg-surface-container-low rounded-pill">
-          <button className="btn bg-surface-container-lowest text-primary fw-semibold rounded-pill px-4 shadow-sm border-0">
-            Cuadrícula
-          </button>
-          <button className="btn text-on-surface-variant fw-medium rounded-pill px-4 border-0 hover-bg-surface-container-high">
-            Mapa
-          </button>
         </div>
       </div>
     </header>
