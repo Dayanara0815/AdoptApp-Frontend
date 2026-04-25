@@ -1,28 +1,42 @@
 import React from 'react';
-import CatalogNavbar from '../../components/CatalogComponents/CatalogNavbar';
+import CatalogHeader from '../../components/CatalogComponents/CatalogHeader';
 import CatalogSidebar from '../../components/CatalogComponents/CatalogSidebar';
+import CatalogGrid from '../../components/CatalogComponents/CatalogGrid';
+import CatalogNavbar from '../../components/CatalogComponents/CatalogNavbar';
+import Footer from '../../components/CatalogComponents/Footer';
 
 const CatalogPage = () => {
-    return (
-        <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
-            <CatalogNavbar />
-
-            <div className="container-fluid">
-                <div className="row">
-                    <nav className="col-md-3 col-lg-2 d-md-block bg-light sidebar p-0">
-                        <CatalogSidebar />
-                    </nav>
-
-                    <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 className="h2">Mascotas Disponibles</h1>
-                        </div>
-
-                    </main>
-                </div>
-            </div>
+  return (
+    <div className="bg-background text-on-background min-vh-100 selection-custom">
+      <CatalogNavbar />
+      
+      {/* Main Content Area */}
+      <main className="container-xl px-4 mx-auto" style={{ paddingTop: '7rem', paddingBottom: '5rem' }}>
+        <CatalogHeader />
+        
+        <div className="row mt-5 g-5">
+          {/* Sidebar */}
+          <div className="col-12 col-lg-3">
+            <CatalogSidebar />
+          </div>
+          
+          {/* Main Grid */}
+          <div className="col-12 col-lg-9">
+            <CatalogGrid />
+          </div>
         </div>
-    );
+      </main>
+
+      <Footer />
+
+      {/* FAB for Mobile */}
+      <div className="position-fixed bottom-0 end-0 m-4 d-md-none" style={{ zIndex: 1000 }}>
+        <button className="btn bg-primary text-on-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center border-0 active-scale" style={{ width: '3.5rem', height: '3.5rem' }}>
+          <span className="material-symbols-outlined">pets</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default CatalogPage;

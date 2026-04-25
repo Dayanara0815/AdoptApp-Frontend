@@ -1,64 +1,50 @@
 import React from 'react';
 
-const Navbar = () => {
-    return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-            <div className="container-fluid px-4">
+const CatalogNavbar = () => {
+  return (
+    <nav className="navbar navbar-expand-md fixed-top glass-nav">
+      <div className="container-xl d-flex justify-content-between align-items-center">
+        
+        {/* Brand */}
+        <a className="navbar-brand fs-4 fw-bold tracking-tighter text-primary font-headline" href="#">
+          AdoptApp
+        </a>
 
-                {/* 1. Logo a la izquierda */}
-                <a className="navbar-brand fw-bold text-primary" href="/">
-                    AdoptApp 🐾
-                </a>
+        {/* Toggler for mobile */}
+        <button className="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-                {/* Botón para móviles (Hamburguesa) */}
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
+        {/* Links and Buttons */}
+        <div className="collapse navbar-collapse justify-content-center" id="navbarContent">
+          <ul className="navbar-nav mx-auto mb-2 mb-md-0 gap-4 font-headline fw-medium" style={{ fontSize: '14px', letterSpacing: '0.025em' }}>
+            <li className="nav-item">
+              <a className="nav-link text-primary fw-bold border-bottom border-primary border-2 pb-1 active" href="#">Find Pets</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link text-secondary" href="#">Shelters</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link text-secondary" href="#">Success Stories</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link text-secondary" href="#">About Us</a>
+            </li>
+          </ul>
 
-                <div className="collapse navbar-collapse" id="navbarContent">
+          <div className="d-flex align-items-center gap-3 mt-3 mt-md-0">
+            <button className="btn btn-link text-secondary fw-medium text-decoration-none rounded-pill px-4" style={{ fontSize: '14px' }}>
+              Sign In
+            </button>
+            <button className="btn bg-primary text-on-primary rounded-pill px-4 fw-medium shadow-sm" style={{ fontSize: '14px' }}>
+              Register
+            </button>
+          </div>
+        </div>
 
-                    {/* 2. Barra de búsqueda central */}
-                    <form className="d-flex mx-auto w-50">
-                        <input
-                            className="form-control me-2"
-                            type="search"
-                            placeholder="Buscar mascotas por nombre, tipo o raza"
-                            aria-label="Search"
-                        />
-                    </form>
-
-                    {/* 3. Botón Publicar e Icono de Perfil a la derecha */}
-                    <div className="d-flex align-items-center">
-                        <button className="btn btn-primary me-3 text-nowrap" type="button">
-                            Publicar Mascota
-                        </button>
-
-                        {/* Dropdown de Perfil */}
-                        <div className="dropdown">
-                            <a
-                                className="btn btn-outline-secondary dropdown-toggle rounded-circle"
-                                href="#"
-                                role="button"
-                                id="profileDropdown"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                style={{ width: '40px', height: '40px', padding: '6px 0' }}
-                            >
-                                👤
-                            </a>
-
-                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><a className="dropdown-item" href="#">Mi Perfil</a></li>
-                                <li><hr className="dropdown-divider" /></li>
-                                <li><a className="dropdown-item text-danger" href="#">Cerrar Sesión</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </nav>
-    );
+      </div>
+    </nav>
+  );
 };
 
-export default Navbar;
+export default CatalogNavbar;
