@@ -9,15 +9,6 @@ const CatalogSidebar = () => {
           Filtros
         </h3>
 
-        {/* Search Input */}
-        <div className="mb-4">
-          <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest" style={{ fontSize: '0.75rem' }}>Buscar</label>
-          <div className="position-relative">
-            <span className="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y ms-3 text-outline" style={{ fontSize: '1.2rem' }}>search</span>
-            <input type="text" className="form-control bg-surface-container-lowest border-0 rounded-3 py-2 ps-5 shadow-none focus-ring" style={{ fontSize: '0.875rem' }} placeholder="Raza o nombre..." />
-          </div>
-        </div>
-
         {/* Species Filter */}
         <div className="mb-4">
           <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Especie</label>
@@ -37,7 +28,7 @@ const CatalogSidebar = () => {
             <div className="form-check d-flex align-items-center gap-2">
               <input className="form-check-input mt-0" type="checkbox" id="species-birds" />
               <label className="form-check-label text-on-surface fw-medium" style={{ fontSize: '0.875rem' }} htmlFor="species-birds">
-                Aves
+                Otros
               </label>
             </div>
           </div>
@@ -67,9 +58,9 @@ const CatalogSidebar = () => {
           <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Tamaño</label>
           <select className="form-select bg-surface-container-lowest border-0 rounded-3 py-2 shadow-none focus-ring text-on-surface fw-medium" style={{ fontSize: '0.875rem' }}>
             <option>Todos los Tamaños</option>
-            <option>Pequeño (0-7 kg)</option>
-            <option>Mediano (8-18 kg)</option>
-            <option>Grande (19-45 kg)</option>
+            <option>Pequeño</option>
+            <option>Mediano</option>
+            <option>Grande</option>
           </select>
         </div>
 
