@@ -17,133 +17,141 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light;       /* solo light — evita el fondo oscuro del sistema */
+  color-scheme: light; /* solo light — evita el fondo oscuro del sistema */
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&family=Be+Vietnam+Pro:wght@400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&family=Be+Vietnam+Pro:wght@400;500&display=swap');
 
-:root {
-  /* Escala de Colores (Basada en tu diseño) */
-  --color-primary-500: #8DAA91; /* Verde Base */
-  --color-primary-700: #5F7E6D; /* Verde Oscuro (Botones) */
-  --color-secondary-500: #F5F5DC; /* Crema */
-  --color-neutral-100: #F7F7F2; /* Fondo */
-  --color-text-900: #2D3436;
-  
-  /* Sobrescribir variables de Bootstrap con la escala */
-  --bs-primary: var(--color-primary-700);
-  --bs-primary-rgb: 95, 126, 109;
-  --bs-secondary: var(--color-secondary-500);
-  --bs-secondary-rgb: 245, 245, 220;
-  --bs-body-bg: var(--color-neutral-100);
-  --bs-body-color: var(--color-text-900);
-  
-  /* Tipografías */
-  --font-heading: 'Plus Jakarta Sans', sans-serif;
-  --font-body: 'Be Vietnam Pro', sans-serif;
-  
-  --bs-body-font-family: var(--font-body);
-  --bs-heading-font-family: var(--font-heading);
+  :root {
+    /* Escala de Colores (Basada en tu diseño) */
+    --color-primary-500: #8daa91; /* Verde Base */
+    --color-primary-700: #5f7e6d; /* Verde Oscuro (Botones) */
+    --color-secondary-500: #f5f5dc; /* Crema */
+    --color-neutral-100: #f7f7f2; /* Fondo */
+    --color-text-900: #2d3436;
 
-  /* Tokens de Diseño */
-  --radius-xl: 32px;
-  --radius-lg: 16px;
-  --radius-md: 8px;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-}
+    /* Sobrescribir variables de Bootstrap con la escala */
+    --bs-primary: var(--color-primary-700);
+    --bs-primary-rgb: 95, 126, 109;
+    --bs-secondary: var(--color-secondary-500);
+    --bs-secondary-rgb: 245, 245, 220;
+    --bs-body-bg: var(--color-neutral-100);
+    --bs-body-color: var(--color-text-900);
 
-/* modo oscuro eliminado — el proyecto usa paleta fija clara */
+    /* Tipografías */
+    --font-heading: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Be Vietnam Pro', sans-serif;
 
+    --bs-body-font-family: var(--font-body);
+    --bs-heading-font-family: var(--font-heading);
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #fafaf5;
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background-color: var(--neutral-bg);
-  color: var(--text-main);
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-#root {
-  width: 100%;
-  max-width: 100vw;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  box-sizing: border-box;
-  background-color: #fafaf5;   /* mismo fondo que body y .profile-page */
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  color: var(--primary-dark);
-  margin-bottom: 1rem;
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+    /* Tokens de Diseño */
+    --radius-xl: 32px;
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
-}
 
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
+  /* modo oscuro eliminado — el proyecto usa paleta fija clara */
 
-  @media (max-width: 1024px) {
-    font-size: 20px;
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #fafaf5;
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--neutral-bg);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #root {
+      width: 100%;
+      max-width: 100vw;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+      box-sizing: border-box;
+      background-color: #fafaf5; /* mismo fondo que body y .profile-page */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 56px;
+      letter-spacing: -1.68px;
+      margin: 32px 0;
+
+      @media (max-width: 1024px) {
+        font-size: 36px;
+        margin: 20px 0;
+      }
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 118%;
+      letter-spacing: -0.24px;
+      margin: 0 0 8px;
+
+      @media (max-width: 1024px) {
+        font-size: 20px;
+      }
+    }
+
+    p {
+      margin: 0;
+    }
+    /* Estilos de Utilidad basados en el diseño */
+    .rounded-custom {
+      border-radius: var(--radius-lg) !important;
+    }
+
+    /* Ajustes globales para botones de Bootstrap */
+    .btn {
+      border-radius: var(--radius-xl) !important;
+      padding: 10px 28px !important;
+      font-weight: 500;
+      font-family: var(--font-body);
+      transition: all 0.2s ease;
+    }
+
+    code {
+      font-size: 15px;
+      line-height: 135%;
+      padding: 4px 8px;
+      background: var(--code-bg);
+    }
+    .btn-primary {
+      --bs-btn-bg: var(--color-primary-700);
+      --bs-btn-border-color: var(--color-primary-700);
+      --bs-btn-hover-bg: #4a6356;
+      --bs-btn-hover-border-color: #4a6356;
+    }
   }
-}
-
-p {
-  margin: 0;
-}
-/* Estilos de Utilidad basados en el diseño */
-.rounded-custom { border-radius: var(--radius-lg) !important; }
-
-/* Ajustes globales para botones de Bootstrap */
-.btn {
-  border-radius: var(--radius-xl) !important;
-  padding: 10px 28px !important;
-  font-weight: 500;
-  font-family: var(--font-body);
-  transition: all 0.2s ease;
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
-}
-.btn-primary {
-  --bs-btn-bg: var(--color-primary-700);
-  --bs-btn-border-color: var(--color-primary-700);
-  --bs-btn-hover-bg: #4a6356;
-  --bs-btn-hover-border-color: #4a6356;
 }

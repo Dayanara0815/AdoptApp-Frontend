@@ -1,53 +1,70 @@
-import { useState } from 'react'
-import { Button } from 'react-bootstrap'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Routes, Route } from 'react-router-dom'
 
 // Layouts
-import DashboardLayout from './layouts/DashboardLayout'
+import DashboardLayout from './layouts/DashboardLayout';
 
 // Páginas Públicas
-import LandingPage from './pages/LandingPage'
-import LoginPage from './pages/LoginPage'
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
 
-// Páginas del Dashboard
-import DashboardHome from './pages/dashboard/DashboardHome'
-import PetsManager from './pages/dashboard/PetsManager'
-import UserProfile from './pages/dashboard/UserProfile'
+// Páginas del Dashboard (Usuario)
+import DashboardHome from './pages/dashboard/DashboardHome';
+import PetsManager from './pages/dashboard/PetsManager';
+import UserProfile from './pages/dashboard/UserProfile';
 
-import './App.css'
+// Componentes de Seguridad
+import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './context/authStore';
+
+import './App.css';
 import Profile from './pages/profile/Profile';
 
 function App() {
+  const { user } = useAuth();
+
   return (
- 
     <div className="app-container">
       <Routes>
         {/* SECCIÓN PÚBLICA */}
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'} replace /> : <LoginPage />} 
+        />
         <Route path="/profile" element={<Profile />} />
-        {/* SECCIÓN PRIVADA (CON SIDEBAR) */}
-        {/* Todas estas rutas compartirán el DashboardLayout */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          {/* La ruta base /dashboard cargará DashboardHome */}
-          <Route index element={<DashboardHome />} />
-          
-          {/* Sub-rutas internas */}
-          <Route path="pets" element={<PetsManager />} />
-          <Route path="profile" element={<UserProfile />} />
+
+        {/* SECCIÓN USUARIO ADOPTANTE */}
+        <Route element={<ProtectedRoute user={user} allowedRole="user" />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="pets" element={<PetsManager />} />
+            <Route path="profile" element={<UserProfile />} />
+          </Route>
+        </Route>
+
+        {/* SECCIÓN ADMINISTRADOR */}
+        <Route element={<ProtectedRoute user={user} allowedRole="admin" />}>
+          <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="dashboard" element={<div>Panel de Administración - Resumen</div>} />
+            <Route path="pets-inventory" element={<div>Gestión de Inventario de Mascotas</div>} />
+            <Route path="users" element={<div>Administración de Usuarios</div>} />
+          </Route>
         </Route>
 
         {/* RUTA 404 */}
-        <Route path="*" element={
-          <div className="text-center py-5">
-            <h1>404 - Página no encontrada</h1>
-          </div>
-        } />
+        <Route
+          path="*"
+          element={
+            <div className="text-center py-5">
+              <h1>404 - Página no encontrada</h1>
+              <p>Lo sentimos, la página que buscas no existe o no tienes permisos para verla.</p>
+            </div>
+          }
+        />
       </Routes>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
