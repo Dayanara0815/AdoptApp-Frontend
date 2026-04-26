@@ -4,11 +4,13 @@ import CatalogSidebar from '../../components/Catalog/CatalogSidebar';
 import CatalogGrid from '../../components/Catalog/CatalogGrid';
 import CatalogNavbar from '../../components/Catalog/CatalogNavbar';
 import Footer from '../../components/Catalog/CatalogFooter';
+import './CatalogPage.css';
 
 const CatalogPage = () => {
     return (
-        <div className="bg-background text-on-background min-vh-100 selection-custom">
-            <CatalogNavbar />
+        <div className="catalog-theme">
+            <div className="bg-background text-on-background min-vh-100 selection-custom">
+                <CatalogNavbar />
 
             {/* Main Content Area */}
             <main className="container-xl px-4 mx-auto" style={{ paddingTop: '7rem', paddingBottom: '5rem' }}>
@@ -34,6 +36,7 @@ const CatalogPage = () => {
                 <button className="btn bg-primary text-on-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center border-0 active-scale" style={{ width: '3.5rem', height: '3.5rem' }}>
                     <span className="material-symbols-outlined">pets</span>
                 </button>
+            </div>
             </div>
         </div>
     );
