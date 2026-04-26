@@ -2,32 +2,41 @@ import React, { useState } from 'react';
 import { Table, Button, Modal, Form, Row, Col, Card, Alert } from 'react-bootstrap';
 import { FaEdit, FaTrash, FaCheckCircle, FaPaw, FaCamera, FaTimes } from 'react-icons/fa';
 
+import useLocalStorage from '../../hooks/useLocalStorage';
+
+const INITIAL_PETS = [
+  { 
+    id: 1, 
+    name: 'Firulais', 
+    species: 'Perro', 
+    age: '2 años', 
+    color: 'Marrón', 
+    size: 'Mediano', 
+    status: 'Buscando hogar',
+    image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100&h=100&fit=crop',
+    description: 'Un perro muy juguetón y cariñoso.'
+  },
+  { 
+    id: 2, 
+    name: 'Luna', 
+    species: 'Gato', 
+    age: '5 meses', 
+    color: 'Blanco', 
+    size: 'Pequeño', 
+    status: 'Adoptado',
+    image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&h=100&fit=crop',
+    description: 'Una gatita tranquila que busca tranquilidad.'
+  },
+];
+
 const MyPublications = () => {
   // --- ESTADOS ---
-  const [pets, setPets] = useState([
-    { 
-      id: 1, 
-      name: 'Firulais', 
-      species: 'Perro', 
-      age: '2 años', 
-      color: 'Marrón', 
-      size: 'Mediano', 
-      status: 'Buscando hogar',
-      image: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=100&h=100&fit=crop',
-      description: 'Un perro muy juguetón y cariñoso.'
-    },
-    { 
-      id: 2, 
-      name: 'Luna', 
-      species: 'Gato', 
-      age: '5 meses', 
-      color: 'Blanco', 
-      size: 'Pequeño', 
-      status: 'Adoptado',
-      image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&h=100&fit=crop',
-      description: 'Una gatita tranquila que busca tranquilidad.'
-    },
-  ]);
+  const { 
+    data: pets, 
+    createItem: addPet, 
+    updateItem: editPet, 
+    deleteItem: removePet 
+  } = useLocalStorage('adopt_app_publications', INITIAL_PETS);
 
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
@@ -90,17 +99,14 @@ const MyPublications = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editingPet) {
-      // Editar
-      setPets(pets.map(p => p.id === editingPet.id ? { ...formData, id: p.id } : p));
+      editPet(editingPet.id, formData);
     } else {
-      // Registrar
       const newPet = {
         ...formData,
-        id: Date.now(),
         status: 'Buscando hogar',
         image: formData.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop'
       };
-      setPets([...pets, newPet]);
+      addPet(newPet);
     }
     handleCloseForm();
   };
@@ -117,9 +123,9 @@ const MyPublications = () => {
   const executeConfirmAction = () => {
     const { type, pet } = confirmModal;
     if (type === 'adopt') {
-      setPets(pets.map(p => p.id === pet.id ? { ...p, status: 'Adoptado' } : p));
+      editPet(pet.id, { status: 'Adoptado' });
     } else if (type === 'delete') {
-      setPets(pets.filter(p => p.id !== pet.id));
+      removePet(pet.id);
     }
     closeConfirm();
   };
@@ -312,12 +318,18 @@ const MyPublications = () => {
                     <Button 
                       variant="danger" 
                       size="sm" 
-                      className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
+                      className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRemoveImage();
                       }}
-                      style={{ width: '32px', height: '32px', padding: '0' }}
+                      style={{ 
+                        width: '24px', 
+                        height: '24px', 
+                        padding: '0',
+                        fontSize: '0.7rem',
+                        border: '2px solid white'
+                      }}
                     >
                       <FaTimes />
                     </Button>
