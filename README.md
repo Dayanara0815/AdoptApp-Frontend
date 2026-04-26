@@ -45,5 +45,5 @@ Vista del perfil del usuario con foto de avatar, datos personales y opción de e
 | Dayanara Caro | Landing Page |
 | Kreisy Valenzuela | Registro, Acceso y Recuperación |
 | Alexis Maza | Catálogo de Mascotas |
-| Segio Rupay | Mis Publicaciones |
+| Sergio Andre Rupay | Mis Publicaciones |
 | Piero Ferrel | Mi Perfil |
