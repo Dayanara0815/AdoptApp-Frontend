@@ -1,5 +1,5 @@
 import React from 'react';
-import PetCard from './PetCard';
+import PetCard from './CatalogPetCard';
 
 const petsData = [
     {

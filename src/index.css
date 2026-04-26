@@ -2,10 +2,14 @@
 
 :root {
   /* Tokens de Diseño Base */
-  --color-primary-500: #8daa91; /* Verde Base */
-  --color-primary-700: #5f7e6d; /* Verde Oscuro (Botones) */
-  --color-secondary-500: #f5f5dc; /* Crema */
-  --color-neutral-100: #f7f7f2; /* Fondo */
+  --color-primary-500: #8daa91;
+  /* Verde Base */
+  --color-primary-700: #5f7e6d;
+  /* Verde Oscuro (Botones) */
+  --color-secondary-500: #f5f5dc;
+  /* Crema */
+  --color-neutral-100: #f7f7f2;
+  /* Fondo */
   --color-text-900: #2d3436;
   --color-text-muted: #6b6375;
 
@@ -28,7 +32,7 @@
   --radius-lg: 16px;
   --radius-md: 8px;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.05);
 
   /* Compatibilidad con estilos anteriores */
   --text: var(--color-text-muted);
@@ -63,7 +67,12 @@ body {
 }
 
 /* Tipografía */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   color: var(--color-primary-700);

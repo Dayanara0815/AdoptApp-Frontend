@@ -7,6 +7,8 @@ import DashboardLayout from './layouts/DashboardLayout';
 // Páginas Públicas
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
+import CatalogPage from './pages/Catalog/CatalogPage';
+
 
 // Páginas del Dashboard (Usuario)
 import DashboardHome from './pages/dashboard/DashboardHome';
@@ -34,6 +36,8 @@ function App() {
           element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'} replace /> : <LoginPage />} 
         />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/catalogo" element={<CatalogPage />} />
+
 
         {/* SECCIÓN USUARIO ADOPTANTE */}
         <Route element={<ProtectedRoute user={user} allowedRole="user" />}>
