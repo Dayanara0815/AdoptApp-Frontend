@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 .App {
   text-align: center;
 }
@@ -35,7 +35,7 @@
   }
   to {
     transform: rotate(360deg);
-=======
+}}
 .counter {
   font-size: 16px;
   padding: 5px 10px;
@@ -218,6 +218,6 @@
   &::after {
     right: 0;
     border-right-color: var(--border);
->>>>>>> dfac39c25cc3d4b224348b93975caa4294281ed3
+
   }
 }

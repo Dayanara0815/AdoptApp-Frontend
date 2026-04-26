@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +14,7 @@ body {
 input, button {
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
-=======
+
 :root {
   /* Tokens de Diseño Base */
   --color-primary-500: #8daa91; /* Verde Base */
@@ -136,4 +136,3 @@ code {
 .dashboard-link:hover {
   background: rgba(255, 255, 255, 0.1);
 }
->>>>>>> dfac39c25cc3d4b224348b93975caa4294281ed3
