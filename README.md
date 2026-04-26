@@ -42,8 +42,8 @@ Vista del perfil del usuario con foto de avatar, datos personales y opción de e
 
 | Nombre | Módulo |
 |--------|--------|
-| Caro | Landing Page |
-| Valenzuela | Registro, Acceso y Recuperación |
-| Maza | Catálogo de Mascotas |
-| Pedro | Mis Publicaciones |
-| Ferrel | Mi Perfil |
+| Dayanara Caro | Landing Page |
+| Kreisy Valenzuela | Registro, Acceso y Recuperación |
+| Alexis Maza | Catálogo de Mascotas |
+| Segio Rupay | Mis Publicaciones |
+| Piero Ferrel | Mi Perfil |
