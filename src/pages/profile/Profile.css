@@ -1,0 +1,274 @@
+/* =====================================================
+   Profile.css — Estilos para el componente Profile.jsx
+   ===================================================== */
+
+/* ---------- Material Symbols — declaración global ---------- */
+/* Sin este bloque los iconos se renderizan como texto plano   */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* ---------- Variables ---------- */
+:root {
+  --primary-yellow: #fdc003;
+  --primary-yellow-hover: #eab308;
+  --app-bg: #fafaf5;
+  --app-white: #ffffff;
+  --text-dark: #2e342d;
+  --text-muted: #5f604d;
+  --green-accent: #4a654f;
+  --border-subtle: rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- Tipografía ---------- */
+.profile-page {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background-color: var(--app-bg);
+  color: var(--text-dark);
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.profile-page h1,
+.profile-page h2,
+.profile-page h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 700;
+}
+
+/* ---------- Botones ---------- */
+.btn-yellow {
+  background-color: var(--primary-yellow);
+  border: none;
+  color: var(--text-dark);
+  font-weight: 700;
+  padding: 10px 40px;
+  border-radius: 50px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-yellow:hover {
+  background-color: var(--primary-yellow-hover);
+  transform: scale(0.98);
+  color: var(--text-dark);
+}
+
+.btn-cancel {
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 10px 40px;
+  border-radius: 50px;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-cancel:hover {
+  background-color: #d6d9dc;
+  transform: scale(0.98);
+}
+
+/* ---------- Cabecera de perfil (card superior) ---------- */
+/* Altura fija para que ambas vistas ocupen el mismo espacio */
+.profile-card {
+  background-color: #f3f4ee;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  min-height: 220px;      /* evita el "salto" de layout */
+}
+
+/* ---------- Avatar ---------- */
+.avatar-container {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 8px solid var(--app-white);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Insignia "verificado" (vista de perfil) */
+.verified-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--green-accent);
+  color: white;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón cámara (vista de edición) */
+.camera-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: var(--green-accent);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.camera-btn:hover {
+  opacity: 0.85;
+}
+
+/* ---------- Info cards (vista de perfil) ---------- */
+.info-card {
+  background-color: var(--app-white);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  height: 100%;
+}
+
+.text-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #5a6159;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Form cards (vista de edición) ---------- */
+.form-container {
+  background-color: var(--app-white);
+  border: 1px solid #eee;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  height: 100%;
+}
+
+.input-group-custom {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.form-control-custom {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 0;
+  font-weight: 500;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.form-control-custom:focus {
+  box-shadow: none;
+  outline: none;
+  background: transparent;
+}
+
+.form-control-custom:disabled {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ---------- Navbar personalizada ---------- */
+.profile-navbar {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.nav-link-custom {
+  color: rgba(95, 96, 77, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link-custom:hover {
+  color: var(--green-accent);
+}
+
+/* ---------- Notificación de guardado ---------- */
+.save-toast {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--green-accent);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(74, 101, 79, 0.35);
+  z-index: 9999;
+  animation: fadeInDown 0.3s ease, fadeOut 0.4s ease 2.2s forwards;
+  white-space: nowrap;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+}
+
+/* ---------- Bottom Nav (móvil) ---------- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(250, 250, 245, 0.92);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+  padding: 12px 0;
+  z-index: 1000;
+}
+
+.bottom-nav-item {
+  text-align: center;
+  color: var(--text-muted);
+  opacity: 0.6;
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.bottom-nav-item.active {
+  opacity: 1;
+  color: white;
+  background-color: var(--green-accent);
+  border-radius: 50px;
+  padding: 8px 20px;
+}
