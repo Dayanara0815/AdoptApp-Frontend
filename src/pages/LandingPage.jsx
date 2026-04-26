@@ -1,38 +1,25 @@
-import React from 'react';
-import { Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import "../App.css";
 
-const LandingPage = () => {
+import Navbar from "../components/landing/Navbar";
+import HeroSection from "../components/landing/HeroSection";
+import AboutSection from "../components/landing/AboutSection";
+import MissionVisionSection from "../components/landing/MissionVisionSection";
+import ObjectivesSection from "../components/landing/ObjectivesSection";
+import NewsletterSection from "../components/landing/NewsletterSection";
+import Footer from "../components/landing/Footer";
+
+export default function LandingPage() {
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      backgroundColor: 'var(--color-neutral-100)',
-      backgroundImage: 'radial-gradient(circle at 10% 20%, var(--color-secondary-500) 0%, transparent 40%)'
-    }}>
-      <Container className="text-center">
-        <h1 style={{ 
-          fontSize: '5rem', 
-          fontWeight: '700',
-          color: 'var(--color-primary-700)',
-          fontFamily: 'var(--font-heading)',
-          letterSpacing: '-2px'
-        }}>AdoptApp</h1>
-        <p className="lead mb-5" style={{ color: 'var(--color-text-900)', fontSize: '1.4rem' }}>
-          Encuentra a tu compañero ideal hoy mismo.
-        </p>
-        <div>
-          <Button as={Link} to="/login" variant="primary" className="me-3" size="lg">
-            Iniciar Sesión
-          </Button>
-          <Button variant="outline-dark" style={{ borderRadius: 'var(--radius-xl)', padding: '12px 28px' }} size="lg">
-            Ver Catálogo
-          </Button>
-        </div>
-      </Container>
+    <div className="landing-root">
+      <Navbar />
+      <main className="pt-5 mt-3">
+        <HeroSection />
+        <AboutSection />
+        <MissionVisionSection />
+        <ObjectivesSection />
+        <NewsletterSection />
+      </main>
+      <Footer />
     </div>
   );
-};
-
-export default LandingPage;
+}

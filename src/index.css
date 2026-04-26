@@ -1,5 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&family=Be+Vietnam+Pro:wght@400;500&display=swap');
+<<<<<<< HEAD
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
+body {
+  background-color: #F7F7F2;
+  color: #333;
+}
+
+input, button {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+=======
 :root {
   /* Tokens de Diseño Base */
   --color-primary-500: #8daa91; /* Verde Base */
@@ -121,3 +136,4 @@ code {
 .dashboard-link:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+>>>>>>> dfac39c25cc3d4b224348b93975caa4294281ed3
