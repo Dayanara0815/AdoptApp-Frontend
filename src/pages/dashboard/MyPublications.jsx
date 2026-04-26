@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal, Form, Row, Col, Card, Alert } from 'react-bootstrap';
-import { FaEdit, FaTrash, FaCheckCircle, FaPaw } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaCheckCircle, FaPaw, FaCamera, FaTimes } from 'react-icons/fa';
 
 const MyPublications = () => {
   // --- ESTADOS ---
@@ -43,15 +43,18 @@ const MyPublications = () => {
 
   // Estado para modales de confirmación (Adoptado / Eliminar)
   const [confirmModal, setConfirmModal] = useState({ show: false, type: '', pet: null });
+  const [imagePreview, setImagePreview] = useState(null);
 
   // --- MANEJADORES DE FORMULARIO ---
   const handleOpenForm = (pet = null) => {
     if (pet) {
       setEditingPet(pet);
       setFormData(pet);
+      setImagePreview(pet.image);
     } else {
       setEditingPet(null);
       setFormData({ name: '', species: 'Perro', age: '', color: '', size: 'Pequeño', description: '', image: '' });
+      setImagePreview(null);
     }
     setShowFormModal(true);
   };
@@ -59,6 +62,24 @@ const MyPublications = () => {
   const handleCloseForm = () => {
     setShowFormModal(false);
     setEditingPet(null);
+    setImagePreview(null);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, image: reader.result });
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData({ ...formData, image: '' });
+    setImagePreview(null);
   };
 
   const handleChange = (e) => {
@@ -268,6 +289,55 @@ const MyPublications = () => {
                 </Form.Group>
               </Col>
             </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label className="fw-bold small">Foto de la mascota</Form.Label>
+              <div className="d-flex flex-column align-items-center p-4 border-dashed rounded-3 text-center" 
+                   style={{ 
+                     border: '2px dashed var(--color-neutral-300)', 
+                     backgroundColor: 'var(--color-neutral-50)',
+                     cursor: 'pointer',
+                     position: 'relative',
+                     transition: 'all 0.2s ease'
+                   }}
+                   onClick={() => document.getElementById('petImageInput').click()}
+              >
+                {imagePreview ? (
+                  <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: 'var(--radius-md)' }} 
+                    />
+                    <Button 
+                      variant="danger" 
+                      size="sm" 
+                      className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveImage();
+                      }}
+                      style={{ width: '32px', height: '32px', padding: '0' }}
+                    >
+                      <FaTimes />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    <FaCamera size={40} className="text-muted mb-2" />
+                    <p className="mb-0 text-muted small">Haz clic para subir una foto</p>
+                    <span className="text-secondary" style={{ fontSize: '0.75rem' }}>JPG, PNG (Máx. 5MB)</span>
+                  </div>
+                )}
+                <Form.Control 
+                  id="petImageInput"
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange}
+                  className="d-none"
+                />
+              </div>
+            </Form.Group>
 
             <Form.Group className="mb-4">
               <Form.Label className="fw-bold small">Descripción / Historia</Form.Label>
