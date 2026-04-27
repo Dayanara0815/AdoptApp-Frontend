@@ -34,6 +34,25 @@ const CatalogSidebar = () => {
                     </div>
                 </div>
 
+                {/* Sex Filter */}
+                <div className="mb-4">
+                    <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Sexo</label>
+                    <div className="d-flex flex-column gap-2">
+                        <div className="form-check d-flex align-items-center gap-2">
+                            <input className="form-check-input mt-0" type="checkbox" id="sex-female" />
+                            <label className="form-check-label text-on-surface fw-medium" style={{ fontSize: '0.875rem' }} htmlFor="sex-female">
+                                Hembra
+                            </label>
+                        </div>
+                        <div className="form-check d-flex align-items-center gap-2">
+                            <input className="form-check-input mt-0" type="checkbox" id="sex-male" />
+                            <label className="form-check-label text-on-surface fw-medium" style={{ fontSize: '0.875rem' }} htmlFor="sex-male">
+                                Macho
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Age Filter */}
                 <div className="mb-4">
                     <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Rango de Edad</label>
