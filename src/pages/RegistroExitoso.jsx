@@ -11,7 +11,7 @@ export default function RegistroExitoso() {
           Tu cuenta ha sido creada y verificada correctamente. ¡Bienvenido(a) a
           AdoptApp!
         </p>
-        <button style={styles.btn} onClick={() => nav('/catalogo')}>
+        <button style={styles.btn} onClick={() => nav('/dashboard')}>
           Ir al catálogo
         </button>
       </div>
@@ -20,10 +20,37 @@ export default function RegistroExitoso() {
 }
 
 const styles = {
-  container: { display:'flex', justifyContent:'center', alignItems:'center', height:'100vh', background:'#F7F7F2' },
-  card: { background:'white', padding:'2.5rem', borderRadius:'16px', boxShadow:'0 4px 24px rgba(0,0,0,0.08)', width:'400px', textAlign:'center' },
-  icono: { fontSize:'4rem', marginBottom:'1rem' },
-  title: { color:'#5F7E6D', fontWeight:'700', marginBottom:'0.8rem' },
-  msg: { color:'#888', marginBottom:'1.8rem', lineHeight:'1.6', fontSize:'0.95rem' },
-  btn: { padding:'13px 40px', background:'#8DAA91', color:'white', border:'none', borderRadius:'10px', cursor:'pointer', fontWeight:'700', fontSize:'1rem' }
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    background: '#F7F7F2',
+  },
+  card: {
+    background: 'white',
+    padding: '2.5rem',
+    borderRadius: '16px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+    width: '400px',
+    textAlign: 'center',
+  },
+  icono: { fontSize: '4rem', marginBottom: '1rem' },
+  title: { color: '#5F7E6D', fontWeight: '700', marginBottom: '0.8rem' },
+  msg: {
+    color: '#888',
+    marginBottom: '1.8rem',
+    lineHeight: '1.6',
+    fontSize: '0.95rem',
+  },
+  btn: {
+    padding: '13px 40px',
+    background: '#8DAA91',
+    color: 'white',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: '700',
+    fontSize: '1rem',
+  },
 };
