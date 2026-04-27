@@ -40,7 +40,7 @@
   color: var(--text-dark);
   width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .profile-page h1,
@@ -88,7 +88,8 @@
   background-color: #f3f4ee;
   border-radius: 24px;
   padding: 3rem 2rem;
-  min-height: 220px;      /* evita el "salto" de layout */
+  min-height: 220px;
+  /* evita el "salto" de layout */
 }
 
 /* ---------- Avatar ---------- */
@@ -199,24 +200,6 @@
   font-style: italic;
 }
 
-/* ---------- Navbar personalizada ---------- */
-.profile-navbar {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.nav-link-custom {
-  color: rgba(95, 96, 77, 0.7);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-link-custom:hover {
-  color: var(--green-accent);
-}
-
 /* ---------- Notificación de guardado ---------- */
 .save-toast {
   position: fixed;
@@ -235,12 +218,22 @@
 }
 
 @keyframes fadeInDown {
-  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 @keyframes fadeOut {
-  to { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-12px);
+  }
 }
 
 /* ---------- Bottom Nav (móvil) ---------- */
