@@ -35,6 +35,13 @@ const ProfileView = ({ profile, onEdit }) => {
     return `${parseInt(day, 10)} de ${months[parseInt(month, 10) - 1]} de ${year}`;
   };
 
+  const infoCards = [
+    { label: 'Nombres', value: profile.names, Icon: MdPerson },
+    { label: 'Apellidos', value: profile.surnames, Icon: MdBadge },
+    { label: 'Fecha de nacimiento', value: formatDate(profile.birthday), Icon: MdCalendarToday },
+    { label: 'Correo electrónico', value: profile.email, Icon: MdMail },
+  ];
+
   return (
     <>
       {/* Cabecera */}
@@ -65,7 +72,20 @@ const ProfileView = ({ profile, onEdit }) => {
         </div>
       </header>
 
-
+      {/* Tarjetas de información */}
+      <div className="row g-4">
+        {infoCards.map(({ label, value, Icon }, idx) => (
+          <div key={idx} className="col-12 col-md-6">
+            <div className="info-card">
+              <div className="d-flex align-items-center gap-2 mb-2">
+                <Icon size={20} color="#4a654f" style={{ opacity: 0.8 }} />
+                <span className="text-label">{label}</span>
+              </div>
+              <div className="fs-5 fw-medium">{value}</div>
+            </div>
+          </div>
+        ))}
+      </div>
       <Footer />
     </>
   );
