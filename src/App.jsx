@@ -28,6 +28,7 @@ import { useAuth } from './context/authStore';
 
 import './App.css';
 import Profile from './pages/profile/Profile';
+import SiteLayout from './layouts/SiteLayout';
 
 function App() {
   const { user } = useAuth();
@@ -36,27 +37,31 @@ function App() {
     <div className="app-container">
       <Routes>
         {/* SECCIÓN PÚBLICA */}
-        <Route path="/" element={<LandingPage />} />
-        
-        {/* LOGIN: Si ya está logueado, redirige según rol. Si no, muestra el Login verde */}
-        {/* integrarlo despues to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}*/ }
-        <Route 
-          path="/login" 
-          element={user ? <Navigate to="/catalogo" replace /> : <Login />} 
-        />
+        {/* SECCIÓN PÚBLICA */}
+        <Route path="/" element={<SiteLayout />}>
+          <Route index element={<LandingPage />} />
+          <Route 
+            path="login" 
+            element={user ? <Navigate to="/catalogo" replace /> : <Login />} 
+          />
+          <Route path="registro" element={<Registro />} />
+          <Route path="verificar-registro" element={<VerificarRegistro />} />
+          <Route path="registro-exitoso" element={<RegistroExitoso />} />
+          <Route
+            path="recuperar-contrasena"
+            element={<RecuperarContrasena />}
+          />
+          <Route
+            path="verificar-recuperacion"
+            element={<VerificarRecuperacion />}
+          />
+          <Route path="nueva-contrasena" element={<NuevaContrasena />} />
+        </Route>
 
-        {/* NUEVAS RUTAS QUE FALTABAN (Ahora sí funcionarán) */}
+        {/* RUTAS ADICIONALES */}
         <Route path="/login-page" element={<LoginPage />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route path="/verificar-registro" element={<VerificarRegistro />} />
-        <Route path="/registro-exitoso" element={<RegistroExitoso />} />
-        <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
-        <Route path="/verificar-recuperacion" element={<VerificarRecuperacion />} />
-        <Route path="/nueva-contrasena" element={<NuevaContrasena />} />
-        
         <Route path="/profile" element={<Profile />} />
         <Route path="/catalogo" element={<CatalogPage />} />
-
 
         {/* SECCIÓN USUARIO ADOPTANTE */}
         <Route element={<ProtectedRoute user={user} allowedRole="user" />}>
@@ -71,9 +76,18 @@ function App() {
         {/* SECCIÓN ADMINISTRADOR */}
         <Route element={<ProtectedRoute user={user} allowedRole="admin" />}>
           <Route path="/admin" element={<DashboardLayout />}>
-            <Route path="dashboard" element={<div>Panel de Administración - Resumen</div>} />
-            <Route path="pets-inventory" element={<div>Gestión de Inventario de Mascotas</div>} />
-            <Route path="users" element={<div>Administración de Usuarios</div>} />
+            <Route
+              path="dashboard"
+              element={<div>Panel de Administración - Resumen</div>}
+            />
+            <Route
+              path="pets-inventory"
+              element={<div>Gestión de Inventario de Mascotas</div>}
+            />
+            <Route
+              path="users"
+              element={<div>Administración de Usuarios</div>}
+            />
           </Route>
         </Route>
 
@@ -83,7 +97,10 @@ function App() {
           element={
             <div className="text-center py-5">
               <h1>404 - Página no encontrada</h1>
-              <p>Lo sentimos, la página que buscas no existe o no tienes permisos para verla.</p>
+              <p>
+                Lo sentimos, la página que buscas no existe o no tienes permisos
+                para verla.
+              </p>
             </div>
           }
         />

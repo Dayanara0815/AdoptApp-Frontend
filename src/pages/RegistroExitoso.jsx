@@ -7,8 +7,13 @@ export default function RegistroExitoso() {
       <div style={styles.card}>
         <div style={styles.icono}>✅</div>
         <h2 style={styles.title}>¡Registro exitoso!</h2>
-        <p style={styles.msg}>Tu cuenta ha sido creada y verificada correctamente. Ya puedes ingresar a AdoptApp.</p>
-        <button style={styles.btn} onClick={() => nav('/')}>Iniciar sesión</button>
+        <p style={styles.msg}>
+          Tu cuenta ha sido creada y verificada correctamente. ¡Bienvenido(a) a
+          AdoptApp!
+        </p>
+        <button style={styles.btn} onClick={() => nav('/catalogo')}>
+          Ir al catálogo
+        </button>
       </div>
     </div>
   );
