@@ -156,7 +156,14 @@ const EditView = ({ profile, onSave, onCancel }) => {
             <MdLocationOn size={20} color="#4a654f" />
             Barcelona, España
           </p>
-
+          <div className="d-flex gap-3 justify-content-center justify-content-md-start flex-wrap">
+            <button className="btn btn-yellow" onClick={() => onSave(form)}>
+              Guardar cambios
+            </button>
+            <button className="btn btn-cancel" onClick={onCancel}>
+              Cancelar
+            </button>
+          </div>
         </div>
       </header>
 
