@@ -90,6 +90,82 @@ const ProfileView = ({ profile, onEdit }) => {
     </>
   );
 };
+// ── Vista de Edición ─────────────────────────────────────
+const AVATAR_DEFAULT = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBafTqsLF9gISd5L5HGf9pQ-TKr3ZDc22PTX4iIReqc2NbOgi2Qrr0IKkpqfcUEIE-8RsmEVC8qJslIod_RV_3euJekryQCiqA8-xNHD6pGDvZGnVHxvtf8uN1xxDgt85abTDy-3HNuHNBxHFG31tX3Vl353IK2kmTyuXS4z23zB66h_71kIN7Yb9sU4GF7OZkwP7TVA80iSxMFdFqLgA56m1tbsl7hatA3kee7iZVU6FzI122Zshor5CRdzf0uBgp1gLFlO4Cih5wC';
+
+const EditView = ({ profile, onSave, onCancel }) => {
+  const [form, setForm] = useState({ ...profile });
+  const fileInputRef = useRef(null);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setForm((prev) => ({ ...prev, avatar: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const fields = [
+    { id: 'names', label: 'Nombres', type: 'text', Icon: MdPerson, disabled: false },
+    { id: 'surnames', label: 'Apellidos', type: 'text', Icon: MdBadge, disabled: false },
+    { id: 'birthday', label: 'Fecha de nacimiento', type: 'date', Icon: MdCalendarToday, disabled: false },
+    { id: 'email', label: 'Correo electrónico', type: 'email', Icon: MdMail, disabled: true },
+  ];
+
+  return (
+    <>
+      {/* Cabecera */}
+      <Navbar />
+      <header className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4 text-center text-md-start">
+        <div className="avatar-container">
+          <img
+            src={form.avatar || AVATAR_DEFAULT}
+            alt="Avatar"
+            className="avatar-img"
+          />
+          {/* Input de archivo oculto */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleAvatarChange}
+          />
+          <button
+            className="camera-btn"
+            type="button"
+            aria-label="Cambiar foto"
+            onClick={() => fileInputRef.current.click()}
+          >
+            <MdPhotoCamera size={22} color="white" />
+          </button>
+        </div>
+
+        <div className="flex-grow-1">
+          <h1 className="display-5 fw-bold mb-1">
+            {form.names} {form.surnames}
+          </h1>
+          <p className="text-secondary mb-4 d-flex align-items-center gap-1 justify-content-center justify-content-md-start">
+            <MdLocationOn size={20} color="#4a654f" />
+            Barcelona, España
+          </p>
+
+        </div>
+      </header>
+
+
+      <Footer />
+    </>
+  );
+};
+
 
 // ── Componente Principal ─────────────────────────────────
 const Profile = () => {
