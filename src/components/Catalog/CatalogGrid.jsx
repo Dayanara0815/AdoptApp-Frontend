@@ -1,21 +1,24 @@
 import React from 'react';
 import PetCard from './CatalogPetCard';
 
-import useLocalStorage from '../../hooks/useLocalStorage';
-import { mockPets } from '../../data/mockPets';
-
-const CatalogGrid = () => {
-    const { data: petsData } = useLocalStorage('catalogPets_v2', mockPets);
-
+const CatalogGrid = ({ petsData = [] }) => {
     return (
         <div>
-            <div className="row g-4">
-                {petsData.map((pet) => (
-                    <div key={pet.id} className="col-12 col-md-6 col-xl-4">
-                        <PetCard {...pet} />
-                    </div>
-                ))}
-            </div>
+            {petsData.length === 0 ? (
+                <div className="text-center py-5">
+                    <span className="material-symbols-outlined mb-3 text-secondary" style={{ fontSize: '48px', fontVariationSettings: "'FILL' 0" }}>search_off</span>
+                    <h3 className="h4 fw-bold text-on-surface">No encontramos resultados</h3>
+                    <p className="text-on-surface-variant">Intenta ajustar tu búsqueda o limpiar los filtros.</p>
+                </div>
+            ) : (
+                <div className="row g-4">
+                    {petsData.map((pet) => (
+                        <div key={pet.id} className="col-12 col-md-6 col-xl-4">
+                            <PetCard {...pet} />
+                        </div>
+                    ))}
+                </div>
+            )}
 
             {/* Pagination */}
             <div className="d-flex justify-content-center align-items-center gap-2 mt-5 pt-4">

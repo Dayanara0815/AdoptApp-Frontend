@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Importamos para redirigir
 import { useAuth } from '../../context/authStore'; // Ajusta la ruta según tu carpeta
 
-const CatalogNavbar = () => {
+const CatalogNavbar = ({ searchQuery, setSearchQuery }) => {
     const nav = useNavigate();
     const { logout } = useAuth(); // Obtenemos la función logout del contexto
 
@@ -38,6 +38,8 @@ const CatalogNavbar = () => {
                                 className="form-control bg-surface-container-lowest border-0 rounded-pill py-2 ps-5 shadow-sm focus-ring text-on-surface"
                                 style={{ fontSize: '0.875rem' }}
                                 placeholder="Buscar por nombre, especie o raza..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                     </div>

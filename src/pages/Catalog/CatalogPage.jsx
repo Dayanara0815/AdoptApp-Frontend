@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { mockPets } from '../../data/mockPets';
 import CatalogHeader from '../../components/Catalog/CatalogHeader';
 import CatalogSidebar from '../../components/Catalog/CatalogSidebar';
 import CatalogGrid from '../../components/Catalog/CatalogGrid';
@@ -7,10 +9,25 @@ import Footer from '../../components/Catalog/CatalogFooter';
 import './CatalogPage.css';
 
 const CatalogPage = () => {
+    const { data: petsData } = useLocalStorage('catalogPets_v2', mockPets);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Filtramos las mascotas basándonos en la búsqueda
+    const filteredPets = petsData.filter(pet => {
+        if (!searchQuery) return true;
+        
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            pet.name.toLowerCase().includes(searchLower) ||
+            pet.breed.toLowerCase().includes(searchLower) ||
+            pet.species.toLowerCase().includes(searchLower)
+        );
+    });
+
     return (
         <div className="catalog-theme">
             <div className="bg-background text-on-background min-vh-100 selection-custom">
-                <CatalogNavbar />
+                <CatalogNavbar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
             {/* Main Content Area */}
             <main className="container-xl px-4 mx-auto" style={{ paddingTop: '7rem', paddingBottom: '5rem' }}>
@@ -24,7 +41,7 @@ const CatalogPage = () => {
 
                     {/* Main Grid */}
                     <div className="col-12 col-lg-9">
-                        <CatalogGrid />
+                        <CatalogGrid petsData={filteredPets} />
                     </div>
                 </div>
             </main>
