@@ -1,12 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos para redirigir
+import { useAuth } from '../../context/authStore'; // Ajusta la ruta según tu carpeta
 
 const CatalogNavbar = () => {
+    const nav = useNavigate();
+    const { logout } = useAuth(); // Obtenemos la función logout del contexto
+
+    const handleLogout = (e) => {
+        e.preventDefault(); // Evitamos que el enlace recargue la página
+        logout(); // Esto limpia el activeUser de localStorage y el estado global
+        nav('/'); // Redirigimos a la página de inicio (Landing Page)
+    };
+
     return (
         <nav className="navbar navbar-expand-md fixed-top glass-nav py-3">
             <div className="container-xl d-flex justify-content-between align-items-center">
 
                 {/* Brand (Left) */}
-                <a className="navbar-brand fs-4 fw-bold tracking-tighter text-primary font-headline" href="#">
+                <a className="navbar-brand fs-4 fw-bold tracking-tighter text-primary font-headline" href="/">
                     AdoptApp
                 </a>
 
@@ -57,7 +68,13 @@ const CatalogNavbar = () => {
                                 </li>
                                 <li><hr className="dropdown-divider opacity-10 my-1" /></li>
                                 <li>
-                                    <a className="dropdown-item d-flex align-items-center gap-2 py-2 px-4 fw-medium text-error" href="#" style={{ fontSize: '14px' }}>
+                                    {/* MODIFICADO: Agregamos onClick para cerrar sesión */}
+                                    <a 
+                                        className="dropdown-item d-flex align-items-center gap-2 py-2 px-4 fw-medium text-error" 
+                                        href="#" 
+                                        style={{ fontSize: '14px' }}
+                                        onClick={handleLogout} 
+                                    >
                                         <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>logout</span>
                                         Cerrar Sesión
                                     </a>
@@ -65,9 +82,7 @@ const CatalogNavbar = () => {
                             </ul>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </nav>
     );

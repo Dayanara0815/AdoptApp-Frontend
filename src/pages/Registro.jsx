@@ -1,31 +1,44 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useLocalStorage from '../hooks/useLocalStorage'; 
 import Navbar from '../components/landing/Navbar';
 import Footer from '../components/landing/Footer';
 
 export default function Registro() {
   const nav = useNavigate();
+  const { data: usuarios, createItem } = useLocalStorage('usuarios'); 
   const [form, setForm] = useState({
-    nombres:'', apellidos:'', fechaNacimiento:'',
-    correo:'', contrasena:'', confirmarContrasena:''
+    nombres:'', apellidos:'', correo:'', contrasena:'', confirmarContrasena:'', role: 'user'
   });
   const [error, setError] = useState('');
 
-  const handleSubmit = async () => {
-    if (!form.nombres || !form.apellidos || !form.correo || !form.contrasena) {
+  const handleSubmit = () => {
+    const { nombres, correo, contrasena, confirmarContrasena } = form;
+
+    if (!nombres || !correo || !contrasena) {
       setError('Todos los campos son obligatorios'); return;
     }
-    if (form.contrasena !== form.confirmarContrasena) {
+    if (contrasena !== confirmarContrasena) {
       setError('Las contraseñas no coinciden'); return;
     }
-    try {
-      await axios.post('http://localhost:8080/api/auth/registrar', form);
-      localStorage.setItem('correo', form.correo);
-      nav('/verificar-registro');
-    } catch(e) {
-      setError(e.response?.data || 'Error al registrar');
+
+    const existe = usuarios.find(u => u.correo === correo);
+    if (existe) {
+      setError('El correo ya está registrado'); return;
     }
+
+    // --- LÓGICA DE CÓDIGO ALEATORIO ---
+    const codigoAleatorio = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Guardamos el código en localStorage para que la otra página lo lea
+    localStorage.setItem('temp_code', codigoAleatorio);
+    localStorage.setItem('temp_correo', correo);
+    
+    // Ventana emergente con el código
+    alert(`🐾 ¡AdoptApp!\nTu código de verificación es: ${codigoAleatorio}`);
+
+    createItem(form);
+    nav('/verificar-registro');
   };
 
   return (

@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthContext } from './authStore';
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  // Intentar recuperar el usuario de la sesión al cargar
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('activeUser');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  const login = (role) => {
-    setUser({ name: role === 'admin' ? 'Administrador' : 'Usuario Común', role });
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem('activeUser', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('activeUser');
   };
 
   return (

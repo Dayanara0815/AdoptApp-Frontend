@@ -39,9 +39,10 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         
         {/* LOGIN: Si ya está logueado, redirige según rol. Si no, muestra el Login verde */}
+        {/* integrarlo despues to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}*/ }
         <Route 
           path="/login" 
-          element={user ? <Navigate to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'} replace /> : <Login />} 
+          element={user ? <Navigate to="/catalogo" replace /> : <Login />} 
         />
 
         {/* NUEVAS RUTAS QUE FALTABAN (Ahora sí funcionarán) */}

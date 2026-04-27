@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import RecuperarContrasena from './pages/RecuperarContrasena';
 import VerificarRecuperacion from './pages/VerificarRecuperacion';
 import NuevaContrasena from './pages/NuevaContrasena';
+import Catalogo from './pages/Catalog/CatalogPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
         <Route path="/verificar-recuperacion" element={<VerificarRecuperacion />} />
         <Route path="/nueva-contrasena" element={<NuevaContrasena />} />
+        <Route path="/catalogo" element={<Catalogo />} />
       </Routes>
     </BrowserRouter>
   );

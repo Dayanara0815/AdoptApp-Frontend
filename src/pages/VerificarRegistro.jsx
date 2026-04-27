@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 export default function VerificarRegistro() {
   const nav = useNavigate();
-  const correo = localStorage.getItem('correo');
+  const correo = localStorage.getItem('temp_correo') || 'usuario@correo.com';
+  
   const [codigo, setCodigo] = useState('');
   const [segundos, setSegundos] = useState(60);
   const [error, setError] = useState('');
@@ -15,23 +15,29 @@ export default function VerificarRegistro() {
     return () => clearTimeout(t);
   }, [segundos]);
 
-  const verificar = async () => {
-    try {
-      await axios.post(`http://localhost:8080/api/auth/verificar?correo=${correo}&codigo=${codigo}`);
+  const verificar = () => {
+    // Leemos el código que se generó en la página anterior
+    const codigoCorrecto = localStorage.getItem('temp_code');
+
+    if (codigo === codigoCorrecto) {
+      // Limpiamos los datos temporales
+      localStorage.removeItem('temp_correo');
+      localStorage.removeItem('temp_code');
       nav('/registro-exitoso');
-    } catch(e) {
-      setError(e.response?.data || 'Código incorrecto');
+    } else {
+      setError('Código incorrecto. Revisa el que salió en la ventana emergente.');
     }
   };
 
-  const reenviar = async () => {
-    try {
-      await axios.post('http://localhost:8080/api/auth/registrar', { correo });
-      setSegundos(60);
-      setError('');
-    } catch(e) {
-      setError('Error al reenviar');
-    }
+  const reenviar = () => {
+    // Generamos un nuevo código y lo mostramos de nuevo
+    const nuevoCodigo = Math.floor(100000 + Math.random() * 900000).toString();
+    localStorage.setItem('temp_code', nuevoCodigo);
+    
+    alert(`Tu nuevo código de verificación es: ${nuevoCodigo}`);
+    
+    setSegundos(60);
+    setError('');
   };
 
   return (
@@ -41,10 +47,20 @@ export default function VerificarRegistro() {
         <h3 style={styles.title}>Verifica tu cuenta</h3>
         <p style={styles.info}>Enviamos un código de 6 dígitos a:</p>
         <p style={styles.correo}>{correo}</p>
+        
         {error && <p style={styles.error}>{error}</p>}
-        <input style={styles.input} placeholder="● ● ● ● ● ●"
-          maxLength={6} onChange={e => setCodigo(e.target.value)} />
-        <button style={styles.btn} onClick={verificar}>Verificar código</button>
+        
+        <input 
+          style={styles.input} 
+          placeholder="0 0 0 0 0 0"
+          maxLength={6} 
+          onChange={e => setCodigo(e.target.value)} 
+        />
+        
+        <button style={styles.btn} onClick={verificar}>
+          Verificar código
+        </button>
+        
         {segundos > 0
           ? <p style={styles.timer}>Reenviar código en {segundos}s</p>
           : <p style={styles.reenviar} onClick={reenviar}>Reenviar código</p>
@@ -56,14 +72,21 @@ export default function VerificarRegistro() {
 
 const styles = {
   container: { display:'flex', justifyContent:'center', alignItems:'center', height:'100vh', background:'#F7F7F2' },
-  card: { background:'white', padding:'2.5rem', borderRadius:'16px', boxShadow:'0 4px 24px rgba(0,0,0,0.08)', width:'400px', textAlign:'center' },
-  logo: { color:'#8DAA91', fontSize:'1.5rem', marginBottom:'0.3rem' },
+  card: { background:'white', padding:'2.5rem', borderRadius:'24px', boxShadow:'0 8px 30px rgba(0,0,0,0.05)', width:'400px', textAlign:'center' },
+  logo: { color:'#8DAA91', fontSize:'1.5rem', marginBottom:'0.3rem', fontWeight:'700' },
   title: { color:'#5F7E6D', fontSize:'1.2rem', fontWeight:'600', marginBottom:'1rem' },
-  info: { color:'#888', fontSize:'0.9rem' },
+  info: { color:'#888', fontSize:'0.9rem', marginBottom:'5px' },
   correo: { color:'#5F7E6D', fontWeight:'700', marginBottom:'1.5rem', fontSize:'0.95rem' },
-  input: { width:'100%', padding:'12px 16px', marginBottom:'14px', borderRadius:'10px', border:'1.5px solid #e0e0e0', fontSize:'1.5rem', textAlign:'center', letterSpacing:'8px', background:'#FAFAFA' },
-  btn: { width:'100%', padding:'13px', background:'#8DAA91', color:'white', border:'none', borderRadius:'10px', cursor:'pointer', fontWeight:'700', fontSize:'1rem', marginBottom:'1rem' },
+  input: { 
+    width:'100%', padding:'12px 16px', marginBottom:'20px', borderRadius:'12px', 
+    border:'1px solid #e0e0e0', fontSize:'1.8rem', textAlign:'center', 
+    letterSpacing:'8px', background:'#FAFAFA', outline: 'none', color: '#5F7E6D' 
+  },
+  btn: { 
+    width:'100%', padding:'14px', background:'#8DAA91', color:'white', border:'none', 
+    borderRadius:'12px', cursor:'pointer', fontWeight:'700', fontSize:'1rem', marginBottom:'1rem' 
+  },
   timer: { color:'#aaa', fontSize:'0.9rem' },
   reenviar: { color:'#8DAA91', cursor:'pointer', fontSize:'0.9rem', fontWeight:'600' },
-  error: { color:'red', fontSize:'0.9rem', marginBottom:'10px', background:'#fff0f0', padding:'8px', borderRadius:'8px' }
+  error: { color:'#d32f2f', fontSize:'0.85rem', marginBottom:'15px', background:'#ffebee', padding:'10px', borderRadius:'10px' }
 };
