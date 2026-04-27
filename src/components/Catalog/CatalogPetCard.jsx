@@ -26,8 +26,8 @@ const PetCard = ({
                     <div className="position-absolute top-0 start-0 m-3">
                         <span
                             className={`badge rounded-pill px-3 py-2 text-uppercase tracking-widest ${isSpecialNeed
-                                    ? 'bg-primary text-on-primary'
-                                    : 'bg-surface-container-lowest text-primary'
+                                ? 'bg-primary text-on-primary'
+                                : 'bg-surface-container-lowest text-primary'
                                 }`}
                             style={{ fontSize: '0.65rem', backdropFilter: 'blur(4px)', backgroundColor: isSpecialNeed ? '' : 'rgba(255,255,255,0.9)' }}
                         >

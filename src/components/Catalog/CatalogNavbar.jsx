@@ -17,7 +17,8 @@ const CatalogNavbar = () => {
             <div className="container-xl d-flex justify-content-between align-items-center">
 
                 {/* Brand (Left) */}
-                <a className="navbar-brand fs-4 fw-bold tracking-tighter text-primary font-headline" href="/">
+                <a className="navbar-brand fs-4 fw-bold tracking-tighter text-primary font-headline d-flex align-items-center gap-1" href="/">
+                    <span className="material-symbols-outlined">pets</span>
                     AdoptApp
                 </a>
 
