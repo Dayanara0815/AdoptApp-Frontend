@@ -1,16 +1,28 @@
 import React from 'react';
 
-const CatalogHeader = () => {
+const CatalogHeader = ({ searchQuery, setSearchQuery }) => {
     return (
-        <header className="mb-5 pt-4">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4">
-                <div style={{ maxWidth: '42rem' }}>
-                    <h1 className="display-4 fw-bolder tracking-tight text-on-surface mb-3" style={{ lineHeight: 1.1 }}>
-                        Encuentra a tu nuevo <span className="text-primary fst-italic">compañero</span>.
-                    </h1>
-                    <p className="fs-5 text-on-surface-variant" style={{ lineHeight: 1.6 }}>
-                        Explora nuestro santuario de animales que esperan un hogar definitivo.
-                    </p>
+        <header className="mb-4">
+            <div className="container-xl px-4">
+                <div className="row justify-content-center">
+                    <div className="col-12 col-md-8">
+                        <div className="position-relative">
+                            <span
+                                className="material-symbols-outlined position-absolute top-50 start-0 translate-middle-y ms-3 text-outline"
+                                style={{ fontSize: '1.2rem' }}
+                            >
+                                search
+                            </span>
+                            <input
+                                type="text"
+                                className="form-control bg-surface-container-lowest border-0 rounded-pill py-3 ps-5 shadow-sm focus-ring text-on-surface"
+                                style={{ fontSize: '0.95rem' }}
+                                placeholder="Buscar por nombre, especie o raza..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>

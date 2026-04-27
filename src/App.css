@@ -245,8 +245,48 @@
 .landing-footer {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   padding: 3rem 0;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   background-color: #f8f9fa;
+  color: var(--color-text-900);
 }
+.landing-footer .text-secondary {
+  color: #5f604d !important;
+}
+.landing-footer .text-primary {
+  color: var(--color-primary-700) !important;
+}
+.landing-footer a.text-decoration-none:hover {
+  text-decoration: underline;
+}
+.landing-footer .btn-outline-primary {
+  color: var(--color-primary-700) !important;
+  border-color: var(--color-primary-700) !important;
+}
+.landing-footer .btn-outline-primary svg {
+  color: inherit;
+  fill: currentColor;
+}
+.landing-footer .btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--color-primary-700) !important;
+  border-color: var(--color-primary-700) !important;
+}
+.landing-footer .footer-social-icon {
+  color: var(--color-primary-700) !important;
+}
+.landing-footer .footer-social-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: var(--color-primary-700) !important;
+}
+.landing-footer .footer-social-icon:hover svg {
+  fill: white !important;
+}
+.landing-footer .footer-social-icon {
+  color: var(--color-primary-700) !important;
+}
+.landing-footer .footer-social-icon svg {
+  display: block;
+  fill: currentColor !important;
+}
+
