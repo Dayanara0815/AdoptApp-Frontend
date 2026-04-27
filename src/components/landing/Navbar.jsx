@@ -1,28 +1,28 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/authStore";
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/authStore';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const isLanding = location.pathname === "/";
+  const isLanding = location.pathname === '/';
 
   const navLinks = [
-    { label: "Quiénes Somos", href: "#quienes-somos" },
-    { label: "Misión", href: "#mision" },
-    { label: "Visión", href: "#vision" },
-    { label: "Objetivos", href: "#objetivos" },
+    { label: 'Quiénes Somos', href: '#quienes-somos' },
+    { label: 'Misión', href: '#mision' },
+    { label: 'Visión', href: '#vision' },
+    { label: 'Objetivos', href: '#objetivos' },
   ];
 
   const handleBrandClick = (event) => {
     event.preventDefault();
     setOpen(false);
     if (isLanding) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      navigate("/");
+      navigate('/');
     }
   };
 
@@ -33,7 +33,7 @@ export default function Navbar() {
     if (isLanding) {
       const target = document.querySelector(href);
       if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
+        target.scrollIntoView({ behavior: 'smooth' });
       } else {
         navigate(`/${href}`);
       }
@@ -50,7 +50,11 @@ export default function Navbar() {
             className="navbar-brand d-flex align-items-center gap-1"
             href="/"
             onClick={handleBrandClick}
-            style={{ color: "var(--primary)", fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 700 }}
+            style={{
+              color: 'var(--primary)',
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 700,
+            }}
           >
             <span className="material-symbols-outlined">pets</span>
             AdoptApp
@@ -65,7 +69,7 @@ export default function Navbar() {
             <span className="navbar-toggler-icon" />
           </button>
 
-          <div className={`navbar-collapse ${open ? "show" : "collapse"}`}>
+          <div className={`navbar-collapse ${open ? 'show' : 'collapse'}`}>
             <ul className="navbar-nav mx-auto">
               {navLinks.map((link) => (
                 <li className="nav-item" key={link.label}>
@@ -78,11 +82,6 @@ export default function Navbar() {
                   </a>
                 </li>
               ))}
-              <li className="nav-item">
-                <a className="landing-nav-link" href="/catalogo" onClick={(e) => { e.preventDefault(); navigate('/catalogo'); }}>
-                  Catálogo
-                </a>
-              </li>
             </ul>
             <div className="d-flex gap-2 mt-3 mt-md-0">
               {user ? (
@@ -91,7 +90,11 @@ export default function Navbar() {
                     className="btn-landing-outline"
                     onClick={() => {
                       setOpen(false);
-                      navigate(user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+                      navigate(
+                        user.role === 'admin'
+                          ? '/admin/dashboard'
+                          : '/dashboard'
+                      );
                     }}
                   >
                     Mi Panel
@@ -101,7 +104,7 @@ export default function Navbar() {
                     onClick={() => {
                       setOpen(false);
                       logout();
-                      navigate("/");
+                      navigate('/');
                     }}
                   >
                     Salir
@@ -113,7 +116,7 @@ export default function Navbar() {
                     className="btn-landing-outline"
                     onClick={() => {
                       setOpen(false);
-                      navigate("/login");
+                      navigate('/login');
                     }}
                   >
                     Ingresar
@@ -122,7 +125,7 @@ export default function Navbar() {
                     className="btn-landing-primary"
                     onClick={() => {
                       setOpen(false);
-                      navigate("/registro");
+                      navigate('/registro');
                     }}
                   >
                     Registrarse

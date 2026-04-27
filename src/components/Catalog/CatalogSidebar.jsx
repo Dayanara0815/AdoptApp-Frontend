@@ -77,17 +77,21 @@ const CatalogSidebar = ({ onFilterApply }) => {
                 {/* Age Filter */}
                 <div className="mb-4">
                     <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Rango de Edad</label>
-                    <div className="row g-2">
+                    <div className="d-flex flex-wrap gap-2">
                         {['Cachorro', 'Joven', 'Adulto', 'Mayor'].map(ageOption => (
-                            <div className="col-6" key={ageOption}>
-                                <button 
-                                    className={`btn w-100 py-2 px-1 fw-semibold shadow-sm text-center ${localFilters.age === ageOption ? 'bg-secondary text-on-secondary border-0' : 'btn-outline-secondary border-outline-variant text-on-surface-variant'}`} 
-                                    style={{ fontSize: '0.75rem', borderRadius: '0.5rem' }}
-                                    onClick={() => setLocalFilters(prev => ({ ...prev, age: prev.age === ageOption ? '' : ageOption }))}
-                                >
-                                    {ageOption}
-                                </button>
-                            </div>
+                            <button 
+                                key={ageOption}
+                                className={`btn flex-grow-1 py-2 px-1 fw-bold shadow-sm transition-all ${localFilters.age === ageOption ? 'bg-secondary text-on-secondary border-0' : 'bg-surface-container-high text-on-surface-variant border-0'}`} 
+                                style={{ 
+                                    fontSize: '0.75rem', 
+                                    borderRadius: '12px', 
+                                    minWidth: 'calc(50% - 0.5rem)',
+                                    transition: 'all 0.2s ease'
+                                }}
+                                onClick={() => setLocalFilters(prev => ({ ...prev, age: prev.age === ageOption ? '' : ageOption }))}
+                            >
+                                {ageOption}
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -96,8 +100,8 @@ const CatalogSidebar = ({ onFilterApply }) => {
                 <div className="mb-4">
                     <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Tamaño</label>
                     <select 
-                        className="form-select bg-surface-container-lowest border-0 rounded-3 py-2 shadow-none focus-ring text-on-surface fw-medium" 
-                        style={{ fontSize: '0.875rem' }}
+                        className="form-select bg-surface-container-lowest border-0 rounded-3 py-2 px-3 shadow-sm focus-ring text-on-surface fw-medium" 
+                        style={{ fontSize: '0.875rem', cursor: 'pointer' }}
                         value={localFilters.size}
                         onChange={(e) => setLocalFilters(prev => ({ ...prev, size: e.target.value }))}
                     >

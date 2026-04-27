@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/landing/Navbar';
-import Footer from '../components/landing/Footer';
 
 export default function RecuperarContrasena() {
   const nav = useNavigate();

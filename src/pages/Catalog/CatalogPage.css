@@ -212,3 +212,21 @@
     background-color: var(--catalog-primary) !important;
     color: var(--catalog-on-primary) !important;
 }
+
+.catalog-theme .btn-whatsapp {
+    background-color: #25D366 !important;
+    border-color: #25D366 !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.catalog-theme .btn-whatsapp:hover {
+    background-color: #128C7E !important;
+    border-color: #128C7E !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
+}
+
+.catalog-theme .btn-whatsapp:active {
+    transform: translateY(0);
+}

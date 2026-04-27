@@ -12,7 +12,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Macho',
         ageCategory: 'Joven',
-        size: 'Grande'
+        size: 'Grande',
+        contactPhone: '573001234567'
     },
     {
         id: 2,
@@ -27,7 +28,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Hembra',
         ageCategory: 'Cachorro',
-        size: 'Mediano'
+        size: 'Mediano',
+        contactPhone: '573001234567'
     },
     {
         id: 3,
@@ -42,7 +44,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Macho',
         ageCategory: 'Adulto',
-        size: 'Grande'
+        size: 'Grande',
+        contactPhone: '573001234567'
     },
     {
         id: 4,
@@ -57,7 +60,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Hembra',
         ageCategory: 'Joven',
-        size: 'Pequeño'
+        size: 'Pequeño',
+        contactPhone: '573001234567'
     },
     {
         id: 5,
@@ -72,7 +76,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Macho',
         ageCategory: 'Adulto',
-        size: 'Grande'
+        size: 'Grande',
+        contactPhone: '573001234567'
     },
     {
         id: 6,
@@ -87,7 +92,8 @@ export const mockPets = [
         species: 'cats',
         sexo: 'Hembra',
         ageCategory: 'Joven',
-        size: 'Pequeño'
+        size: 'Pequeño',
+        contactPhone: '573001234567'
     },
     {
         id: 7,
@@ -102,7 +108,8 @@ export const mockPets = [
         species: 'cats',
         sexo: 'Macho',
         ageCategory: 'Mayor',
-        size: 'Mediano'
+        size: 'Mediano',
+        contactPhone: '573001234567'
     },
     {
         id: 8,
@@ -117,7 +124,8 @@ export const mockPets = [
         species: 'others',
         sexo: 'Hembra',
         ageCategory: 'Joven',
-        size: 'Pequeño'
+        size: 'Pequeño',
+        contactPhone: '573001234567'
     },
     {
         id: 9,
@@ -132,7 +140,8 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Macho',
         ageCategory: 'Adulto',
-        size: 'Grande'
+        size: 'Grande',
+        contactPhone: '573001234567'
     },
     {
         id: 10,
@@ -147,6 +156,7 @@ export const mockPets = [
         species: 'dogs',
         sexo: 'Hembra',
         ageCategory: 'Adulto',
-        size: 'Mediano'
+        size: 'Mediano',
+        contactPhone: '573001234567'
     }
 ];
