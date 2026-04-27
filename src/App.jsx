@@ -37,42 +37,29 @@ function App() {
     <div className="app-container">
       <Routes>
         {/* SECCIÓN PÚBLICA */}
+        {/* SECCIÓN PÚBLICA */}
         <Route path="/" element={<SiteLayout />}>
           <Route index element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Registro />} />
-          <Route path="/verificar-registro" element={<VerificarRegistro />} />
-          <Route path="/registro-exitoso" element={<RegistroExitoso />} />
+          <Route 
+            path="login" 
+            element={user ? <Navigate to="/catalogo" replace /> : <Login />} 
+          />
+          <Route path="registro" element={<Registro />} />
+          <Route path="verificar-registro" element={<VerificarRegistro />} />
+          <Route path="registro-exitoso" element={<RegistroExitoso />} />
           <Route
-            path="/recuperar-contrasena"
+            path="recuperar-contrasena"
             element={<RecuperarContrasena />}
           />
           <Route
-            path="/verificar-recuperacion"
+            path="verificar-recuperacion"
             element={<VerificarRecuperacion />}
           />
-          <Route path="/nueva-contrasena" element={<NuevaContrasena />} />
+          <Route path="nueva-contrasena" element={<NuevaContrasena />} />
         </Route>
 
-        {/* LOGIN: Si ya está logueado, redirige según rol. Si no, muestra el Login verde */}
-        {/* integrarlo despues to={user.role === 'admin' ? '/admin/dashboard' : '/dashboard'}*/}
-        <Route
-          path="/login"
-          element={user ? <Navigate to="/catalogo" replace /> : <Login />}
-        />
-
-        {/* NUEVAS RUTAS QUE FALTABAN (Ahora sí funcionarán) */}
+        {/* RUTAS ADICIONALES */}
         <Route path="/login-page" element={<LoginPage />} />
-        <Route path="/registro" element={<Registro />} />
-        <Route path="/verificar-registro" element={<VerificarRegistro />} />
-        <Route path="/registro-exitoso" element={<RegistroExitoso />} />
-        <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
-        <Route
-          path="/verificar-recuperacion"
-          element={<VerificarRecuperacion />}
-        />
-        <Route path="/nueva-contrasena" element={<NuevaContrasena />} />
-
         <Route path="/profile" element={<Profile />} />
         <Route path="/catalogo" element={<CatalogPage />} />
 

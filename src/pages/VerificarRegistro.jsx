@@ -26,13 +26,17 @@ export default function VerificarRegistro() {
     if (codigo === codigoCorrecto) {
       // 1. Recuperamos los datos del usuario que se está registrando
       const rawTempUser = localStorage.getItem('temp_user');
+      console.log('Verificación exitosa. Buscando temp_user:', rawTempUser);
       if (rawTempUser) {
         const tempUser = JSON.parse(rawTempUser);
+        console.log('Guardando usuario oficial:', tempUser);
         // Guardamos oficialmente en la lista de usuarios
         createItem(tempUser);
         // Iniciamos sesión automáticamente
         login(tempUser);
         localStorage.removeItem('temp_user');
+      } else {
+        console.warn('No se encontró temp_user en localStorage');
       }
 
       // 2. Limpiamos los datos temporales del código

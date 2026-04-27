@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/authStore";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
   const isLanding = location.pathname === "/";
 
   const navLinks = [
@@ -76,26 +78,57 @@ export default function Navbar() {
                   </a>
                 </li>
               ))}
+              <li className="nav-item">
+                <a className="landing-nav-link" href="/catalogo" onClick={(e) => { e.preventDefault(); navigate('/catalogo'); }}>
+                  Catálogo
+                </a>
+              </li>
             </ul>
             <div className="d-flex gap-2 mt-3 mt-md-0">
-              <button
-                className="btn-landing-outline"
-                onClick={() => {
-                  setOpen(false);
-                  navigate("/login");
-                }}
-              >
-                Ingresar
-              </button>
-              <button
-                className="btn-landing-primary"
-                onClick={() => {
-                  setOpen(false);
-                  navigate("/registro");
-                }}
-              >
-                Registrarse
-              </button>
+              {user ? (
+                <>
+                  <button
+                    className="btn-landing-outline"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate(user.role === 'admin' ? '/admin/dashboard' : '/dashboard');
+                    }}
+                  >
+                    Mi Panel
+                  </button>
+                  <button
+                    className="btn-landing-primary"
+                    onClick={() => {
+                      setOpen(false);
+                      logout();
+                      navigate("/");
+                    }}
+                  >
+                    Salir
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="btn-landing-outline"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate("/login");
+                    }}
+                  >
+                    Ingresar
+                  </button>
+                  <button
+                    className="btn-landing-primary"
+                    onClick={() => {
+                      setOpen(false);
+                      navigate("/registro");
+                    }}
+                  >
+                    Registrarse
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

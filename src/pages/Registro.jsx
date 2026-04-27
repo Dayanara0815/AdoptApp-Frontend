@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useLocalStorage from '../hooks/useLocalStorage';
-import Navbar from '../components/landing/Navbar';
-import Footer from '../components/landing/Footer';
 
 export default function Registro() {
   const nav = useNavigate();
-  const { data: usuarios, createItem } = useLocalStorage('usuarios');
+  const { data: usuarios } = useLocalStorage('usuarios');
   const [form, setForm] = useState({
     nombres: '',
     apellidos: '',
@@ -50,7 +48,7 @@ export default function Registro() {
     // Guardamos los datos del usuario temporalmente hasta que verifique el código
     const { confirmarContrasena: _, ...usuarioAGuardar } = form;
     localStorage.setItem('temp_user', JSON.stringify(usuarioAGuardar));
-    
+
     nav('/verificar-registro');
   };
 

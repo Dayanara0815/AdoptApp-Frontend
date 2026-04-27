@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 /**
  * Hook para manejar persistencia en localStorage y simular operaciones CRUD.
- * Esta versión está optimizada para evitar sobreescrituras por estados obsoletos
- * y para sincronizar cambios entre múltiples pestañas o instancias.
+ * Esta versión lee directamente de localStorage antes de escribir para evitar
+ * problemas con estados obsoletos en componentes que se montan/desmontan rápido.
  * 
  * @param {string} key - Clave bajo la cual se guardará la data en localStorage.
  * @param {Array} initialData - Datos iniciales si no hay nada en el storage.
@@ -39,56 +39,72 @@ const useLocalStorage = (key, initialData = []) => {
 
   /**
    * Función para actualizar tanto el estado como el localStorage.
-   * Se usa para reemplazar el 'setData' directo.
    */
   const setValue = useCallback((value) => {
     try {
-      setData((prev) => {
-        const valueToStore = value instanceof Function ? value(prev) : value;
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        return valueToStore;
-      });
+      // Leemos lo más reciente de localStorage antes de decidir qué guardar
+      const currentStored = window.localStorage.getItem(key);
+      const prevValue = currentStored ? JSON.parse(currentStored) : initialData;
+      
+      const valueToStore = value instanceof Function ? value(prevValue) : value;
+      
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      setData(valueToStore);
     } catch (error) {
       console.error(`Error al guardar en localStorage [${key}]:`, error);
     }
-  }, [key]);
+  }, [key, initialData]);
 
-  // --- OPERACIONES CRUD ---
+  // --- OPERACIONES CRUD (Leen de localStorage para máxima seguridad) ---
 
   const createItem = useCallback((newItem) => {
-    const itemWithId = { ...newItem, id: newItem.id || Date.now() };
-    setData((prev) => {
-      const updated = [...prev, itemWithId];
+    try {
+      const itemWithId = { ...newItem, id: newItem.id || Date.now() };
+      
+      const current = JSON.parse(window.localStorage.getItem(key) || JSON.stringify(initialData));
+      const updated = [...current, itemWithId];
+      
       window.localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
-    });
-  }, [key]);
+      setData(updated);
+    } catch (error) {
+      console.error(`Error al crear item en [${key}]:`, error);
+    }
+  }, [key, initialData]);
 
   const updateItem = useCallback((id, updatedFields) => {
-    setData((prev) => {
-      const updated = prev.map((item) =>
+    try {
+      const current = JSON.parse(window.localStorage.getItem(key) || JSON.stringify(initialData));
+      const updated = current.map((item) =>
         item.id === id ? { ...item, ...updatedFields } : item
       );
+      
       window.localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
-    });
-  }, [key]);
+      setData(updated);
+    } catch (error) {
+      console.error(`Error al actualizar item en [${key}]:`, error);
+    }
+  }, [key, initialData]);
 
   const deleteItem = useCallback((id) => {
-    setData((prev) => {
-      const updated = prev.filter((item) => item.id !== id);
+    try {
+      const current = JSON.parse(window.localStorage.getItem(key) || JSON.stringify(initialData));
+      const updated = current.filter((item) => item.id !== id);
+      
       window.localStorage.setItem(key, JSON.stringify(updated));
-      return updated;
-    });
-  }, [key]);
+      setData(updated);
+    } catch (error) {
+      console.error(`Error al eliminar item en [${key}]:`, error);
+    }
+  }, [key, initialData]);
 
   const getItemById = useCallback((id) => {
+    // Para lectura puntual, usamos el estado actual
     return data.find((item) => item.id === id);
   }, [data]);
 
   return {
     data,
-    setData: setValue, // Exportamos la versión envuelta que persiste
+    setData: setValue,
     createItem,
     updateItem,
     deleteItem,
