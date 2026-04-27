@@ -160,7 +160,32 @@ const EditView = ({ profile, onSave, onCancel }) => {
         </div>
       </header>
 
-
+      {/* Formulario */}
+      <section className="row g-4">
+        {fields.map(({ id, label, type, Icon, disabled }) => (
+          <div key={id} className="col-12 col-md-6">
+            <div className="form-container" style={disabled ? { backgroundColor: '#fdfdfd' } : {}}>
+              <label
+                htmlFor={id}
+                className={`d-flex align-items-center gap-2 mb-2 text-muted small fw-bold text-uppercase${disabled ? ' opacity-50' : ''}`}
+              >
+                <Icon size={18} />
+                {label}
+              </label>
+              <div className="input-group-custom" style={disabled ? { backgroundColor: '#f1f1f1' } : {}}>
+                <input
+                  type={type}
+                  id={id}
+                  className={`form-control form-control-custom w-100${disabled ? ' text-muted fst-italic' : ''}`}
+                  value={form[id]}
+                  onChange={disabled ? undefined : handleChange}
+                  disabled={disabled}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
       <Footer />
     </>
   );
