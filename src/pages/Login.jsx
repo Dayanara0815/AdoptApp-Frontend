@@ -1,26 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authStore';
 import useLocalStorage from '../hooks/useLocalStorage';
-import Navbar from '../components/landing/Navbar';
-import Footer from '../components/landing/Footer';
-
-const demoUsers = [
-  {
-    id: 1,
-    nombre: 'Usuario Demo',
-    correo: 'demo@demo.com',
-    contrasena: '1234',
-    role: 'user',
-  },
-  {
-    id: 2,
-    nombre: 'Usuario Demo 2',
-    correo: 'demo2@demo.com',
-    contrasena: 'abcd',
-    role: 'user',
-  },
-];
 
 export default function Login() {
   const nav = useNavigate();
@@ -28,12 +9,6 @@ export default function Login() {
   const { data: usuarios } = useLocalStorage('usuarios');
   const [form, setForm] = useState({ correo: '', contrasena: '' });
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (usuarios.length === 0) {
-      setUsuarios(demoUsers);
-    }
-  }, [usuarios, setUsuarios]);
 
   const handleIngresar = () => {
     // 1. VALIDACIÓN: Buscar si el usuario existe en localStorage

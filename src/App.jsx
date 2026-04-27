@@ -40,9 +40,9 @@ function App() {
         {/* SECCIÓN PÚBLICA */}
         <Route path="/" element={<SiteLayout />}>
           <Route index element={<LandingPage />} />
-          <Route 
-            path="login" 
-            element={user ? <Navigate to="/catalogo" replace /> : <Login />} 
+          <Route
+            path="login"
+            element={user ? <Navigate to="/catalogo" replace /> : <Login />}
           />
           <Route path="registro" element={<Registro />} />
           <Route path="verificar-registro" element={<VerificarRegistro />} />
@@ -60,7 +60,6 @@ function App() {
 
         {/* RUTAS ADICIONALES */}
         <Route path="/login-page" element={<LoginPage />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/catalogo" element={<CatalogPage />} />
 
         {/* SECCIÓN USUARIO ADOPTANTE */}
@@ -69,7 +68,7 @@ function App() {
             <Route index element={<DashboardHome />} />
             <Route path="my-publications" element={<MyPublications />} />
             <Route path="pets" element={<PetsManager />} />
-            <Route path="profile" element={<UserProfile />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Route>
 
