@@ -133,15 +133,15 @@ const MyPublications = () => {
   return (
     <div className="container-fluid py-2">
       {/* HEADER */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
         <div>
           <h2 className="fw-bold mb-1" style={{ color: 'var(--color-primary-700)' }}>Mis Publicaciones</h2>
-          <p className="text-muted">Administra y actualiza el estado de tus mascotas publicadas.</p>
+          <p className="text-muted mb-0">Administra y actualiza el estado de tus mascotas publicadas.</p>
         </div>
         <Button 
           variant="primary" 
           onClick={() => handleOpenForm()}
-          className="shadow-sm d-flex align-items-center gap-2"
+          className="shadow-sm d-flex align-items-center gap-2 text-nowrap"
           style={{ padding: '12px 24px', fontWeight: '600' }}
         >
           <FaPaw /> Registrar Nueva Mascota

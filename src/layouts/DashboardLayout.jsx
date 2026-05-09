@@ -1,10 +1,12 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import { useAuth } from '../context/authStore';
 
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   const userLinks = [
     { to: '/dashboard/catalogo', label: 'Catálogo' },
@@ -20,27 +22,70 @@ const DashboardLayout = () => {
 
   const links = user?.role === 'admin' ? adminLinks : userLinks;
 
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Lock body scroll on mobile when sidebar is open
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sidebarOpen]);
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        backgroundColor: 'var(--color-neutral-100)',
-      }}
-    >
+    <div className="dashboard-container">
+      {/* Mobile Top Header */}
+      <header className="dashboard-mobile-header">
+        <button
+          className="dashboard-toggle-btn"
+          onClick={() => setSidebarOpen(true)}
+          aria-label="Abrir panel"
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>menu</span>
+        </button>
+        <span className="dashboard-mobile-title">AdoptApp</span>
+        <div style={{ width: '40px' }} /> {/* Spacer for centering title */}
+      </header>
+
+      {/* Backdrop for closing sidebar on mobile click */}
+      <div
+        className={`dashboard-backdrop ${sidebarOpen ? 'open' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+
       {/* Sidebar con estilo del diseño */}
-      <aside
-        style={{
-          width: '280px',
-          background: 'var(--color-primary-700)',
-          color: 'white',
-          padding: '30px 20px',
-          display: 'flex',
-          flexDirection: 'column',
-          boxShadow: '4px 0 15px rgba(0,0,0,0.05)',
-        }}
-      >
+      <aside className={`dashboard-sidebar ${sidebarOpen ? 'open' : ''}`}>
+        {/* Mobile Header Inside Sidebar with Close Button */}
+        <div className="d-flex d-md-none justify-content-between align-items-center mb-4">
+          <span className="fw-bold" style={{ color: 'var(--color-secondary-500)', fontSize: '1.25rem' }}>AdoptApp</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '4px',
+              borderRadius: '50%'
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '24px' }}>close</span>
+          </button>
+        </div>
+
+        {/* Desktop Branding Title */}
         <h3
+          className="d-none d-md-block"
           style={{
             fontFamily: 'var(--font-heading)',
             fontSize: '1.5rem',
@@ -75,7 +120,7 @@ const DashboardLayout = () => {
       </aside>
 
       {/* Contenido Principal */}
-      <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
+      <main className="dashboard-main">
         <Outlet />
       </main>
     </div>
@@ -83,3 +128,4 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
+

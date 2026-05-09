@@ -18,15 +18,15 @@ const AdminUsers = () => {
   };
 
   return (
-    <div className="admin-container p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="admin-container p-0 p-md-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
           <h2 className="fw-bold text-primary mb-0">Gestión de Usuarios</h2>
           <p className="text-secondary mb-0">
             Administra los permisos y cuentas de la plataforma
           </p>
         </div>
-        <Badge bg="primary" className="px-3 py-2 rounded-pill">
+        <Badge bg="primary" className="px-3 py-2 rounded-pill text-nowrap">
           Total: {usuarios.length}
         </Badge>
       </div>

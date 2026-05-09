@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authStore';
+import Drawer from './Drawer';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -65,11 +66,13 @@ export default function Navbar() {
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon" />
           </button>
 
-          <div className={`navbar-collapse ${open ? 'show' : 'collapse'}`}>
+          {/* Desktop Navigation Link System (hidden on mobile, managed natively by Bootstrap) */}
+          <div className="collapse navbar-collapse">
             <ul className="navbar-nav mx-auto">
               {navLinks.map((link) => (
                 <li className="nav-item" key={link.label}>
@@ -136,6 +139,17 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Drawer Component for Mobile Screens */}
+      <Drawer
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        navLinks={navLinks}
+        handleNavClick={handleNavClick}
+        user={user}
+        logout={logout}
+        navigate={navigate}
+      />
     </header>
   );
 }

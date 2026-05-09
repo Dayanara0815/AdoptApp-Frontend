@@ -7,15 +7,15 @@ const AdminAdoptions = () => {
   const adoptedPets = petsData.filter((pet) => pet.isAdopted);
 
   return (
-    <div className="admin-container p-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="admin-container p-0 p-md-4">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
           <h2 className="fw-bold text-success mb-0">Registro de Adopciones</h2>
           <p className="text-secondary mb-0">
             Mascotas que ya encontraron un hogar
           </p>
         </div>
-        <Badge bg="success" className="px-3 py-2 rounded-pill">
+        <Badge bg="success" className="px-3 py-2 rounded-pill text-nowrap">
           Total: {adoptedPets.length}
         </Badge>
       </div>
