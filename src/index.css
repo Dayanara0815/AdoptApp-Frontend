@@ -130,3 +130,15 @@ code {
 .dashboard-link:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* Animaciones para el Sistema de Toasts */
+@keyframes slideIn {
+  0% {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

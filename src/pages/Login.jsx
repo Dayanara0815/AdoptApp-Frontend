@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthMutations } from '../hooks/useAuthMutations';
+import { useToast } from '../context/ToastContext';
 
 export default function Login() {
   const nav = useNavigate();
+  const { showToast } = useToast();
   const { login, isLoggingIn } = useAuthMutations();
   const [form, setForm] = useState({ correo: '', contrasena: '' });
   const [error, setError] = useState('');
-  const [selectedRole, setSelectedRole] = useState('USER'); // 'USER' o 'HOSTEL'
 
   // Estados de hover para interactividad premium
   const [hoverBtn, setHoverBtn] = useState(false);
@@ -17,6 +18,7 @@ export default function Login() {
   const handleIngresar = async () => {
     if (!form.correo || !form.contrasena) {
       setError('Por favor, ingresa tu correo y contraseña.');
+      showToast('Por favor, ingresa tu correo y contraseña.', 'warning');
       return;
     }
 
@@ -25,6 +27,8 @@ export default function Login() {
     try {
       // 1. Llamar a la mutación de React Query para iniciar sesión
       const loginData = await login({ correo: form.correo, contrasena: form.contrasena });
+
+      showToast(`¡Bienvenido de nuevo, ${loginData.user?.fullName || 'Usuario'}! 🐾`, 'success');
 
       // 2. Redirigir según el rol real de su cuenta
       const userRoleLower = loginData.user?.role?.toLowerCase();
@@ -37,6 +41,7 @@ export default function Login() {
       console.error('Error al iniciar sesión:', err);
       const msg = err?.message || 'Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.';
       setError(msg);
+      showToast(msg, 'error');
     }
   };
 
@@ -46,34 +51,8 @@ export default function Login() {
         <div style={styles.card}>
           <h3 style={styles.title}>Iniciar Sesión</h3>
 
-          {/* Selector interactivo de perfil */}
-          <div style={styles.tabContainer}>
-            <button
-              type="button"
-              style={{
-                ...styles.tabButton,
-                ...(selectedRole === 'USER' ? styles.tabButtonActive : {}),
-              }}
-              onClick={() => setSelectedRole('USER')}
-            >
-              🐾 Adoptante
-            </button>
-            <button
-              type="button"
-              style={{
-                ...styles.tabButton,
-                ...(selectedRole === 'HOSTEL' ? styles.tabButtonActive : {}),
-              }}
-              onClick={() => setSelectedRole('HOSTEL')}
-            >
-              🏠 Albergue
-            </button>
-          </div>
-
           <p style={styles.subtitle}>
-            {selectedRole === 'USER'
-              ? 'Encuentra a tu nuevo compañero de vida'
-              : 'Administra tus publicaciones y rescates'}
+            Encuentra a tu nuevo compañero de vida o administra tus publicaciones
           </p>
 
           {error && <p style={styles.error}>{error}</p>}
@@ -129,12 +108,11 @@ export default function Login() {
 
           <p
             style={{ ...styles.link, color: hoverLink2 ? '#3A5044' : '#5F7E6D' }}
-            onClick={() => nav('/registro', { state: { role: selectedRole } })}
+            onClick={() => nav('/registro')}
             onMouseEnter={() => setHoverLink2(true)}
             onMouseLeave={() => setHoverLink2(false)}
           >
-            ¿No tienes cuenta?{' '}
-            <b>Regístrate como {selectedRole === 'USER' ? 'Adoptante' : 'Albergue'}</b>
+            ¿No tienes cuenta? <b>Regístrate aquí</b>
           </p>
         </div>
       </div>
@@ -180,30 +158,7 @@ const styles = {
     color: '#7A8F82',
     fontSize: '0.9rem',
     marginBottom: '1.5rem',
-  },
-  tabContainer: {
-    display: 'flex',
-    background: '#EAEFEA',
-    borderRadius: '12px',
-    padding: '4px',
-    marginBottom: '1rem',
-  },
-  tabButton: {
-    flex: 1,
-    padding: '10px',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    color: '#7A8F82',
-    border: 'none',
-    background: 'transparent',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-  },
-  tabButtonActive: {
-    background: '#8DAA91',
-    color: 'white',
-    boxShadow: '0 2px 6px rgba(141, 170, 145, 0.2)',
+    lineHeight: '1.4',
   },
   input: {
     width: '100%',

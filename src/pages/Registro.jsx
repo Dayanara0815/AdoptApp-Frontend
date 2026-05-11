@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 export default function Registro() {
   const nav = useNavigate();
   const location = useLocation();
+  const { showToast } = useToast();
 
   const [form, setForm] = useState({
     nombres: '',
@@ -39,23 +41,31 @@ export default function Registro() {
     const { correo, contrasena, confirmarContrasena, role } = form;
 
     if (!correo || !contrasena || !confirmarContrasena) {
-      setError('Por favor, ingresa los campos obligatorios de acceso (correo y contraseña).');
+      const msg = 'Por favor, ingresa los campos obligatorios de acceso (correo y contraseña).';
+      setError(msg);
+      showToast(msg, 'warning');
       return;
     }
 
     if (contrasena !== confirmarContrasena) {
-      setError('Las contraseñas no coinciden.');
+      const msg = 'Las contraseñas no coinciden.';
+      setError(msg);
+      showToast(msg, 'error');
       return;
     }
 
     if (role === 'USER') {
       if (!form.nombres || !form.apellidos || !form.fechaNacimiento) {
-        setError('Por favor, completa tus nombres, apellidos y fecha de nacimiento.');
+        const msg = 'Por favor, completa tus nombres, apellidos y fecha de nacimiento.';
+        setError(msg);
+        showToast(msg, 'warning');
         return;
       }
     } else if (role === 'HOSTEL') {
       if (!form.hostelName || !form.phone || !form.address) {
-        setError('Por favor, completa el nombre, teléfono y dirección física de tu albergue.');
+        const msg = 'Por favor, completa el nombre, teléfono y dirección física de tu albergue.';
+        setError(msg);
+        showToast(msg, 'warning');
         return;
       }
     }
@@ -69,6 +79,7 @@ export default function Registro() {
     localStorage.setItem('temp_code', codigoAleatorio);
     localStorage.setItem('temp_correo', correo);
 
+    showToast(`🐾 Código de verificación generado con éxito para ${correo}`, 'info');
     // Ventana emergente premium simulada
     alert(`🐾 ¡AdoptApp!\nTu código de verificación es: ${codigoAleatorio}`);
 

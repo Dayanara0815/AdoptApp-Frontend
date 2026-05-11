@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { petService } from '../services/petService';
+import { useToast } from '../context/ToastContext';
 
 export const usePets = () => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   // Query para obtener todas las mascotas
   const petsQuery = useQuery({
@@ -18,6 +20,10 @@ export const usePets = () => {
     mutationFn: petService.createPet,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pets'] });
+      showToast('🐾 Mascota registrada en el catálogo exitosamente.', 'success');
+    },
+    onError: (error) => {
+      showToast(error?.message || 'Error al registrar la mascota.', 'error');
     },
   });
 
@@ -26,6 +32,10 @@ export const usePets = () => {
     mutationFn: ({ id, data }) => petService.updatePet(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pets'] });
+      showToast('🐾 Mascota actualizada correctamente.', 'success');
+    },
+    onError: (error) => {
+      showToast(error?.message || 'Error al actualizar la mascota.', 'error');
     },
   });
 
@@ -34,6 +44,10 @@ export const usePets = () => {
     mutationFn: petService.deletePet,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pets'] });
+      showToast('🗑️ Mascota retirada del catálogo.', 'warning');
+    },
+    onError: (error) => {
+      showToast(error?.message || 'Error al retirar la mascota.', 'error');
     },
   });
 
