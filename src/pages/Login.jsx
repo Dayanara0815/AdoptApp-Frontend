@@ -1,93 +1,144 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authStore';
-import useLocalStorage from '../hooks/useLocalStorage';
+import { useAuthMutations } from '../hooks/useAuthMutations';
 
 export default function Login() {
   const nav = useNavigate();
-  const { login } = useAuth();
-  const { data: usuarios } = useLocalStorage('usuarios');
+  const { login, isLoggingIn } = useAuthMutations();
   const [form, setForm] = useState({ correo: '', contrasena: '' });
   const [error, setError] = useState('');
+  const [selectedRole, setSelectedRole] = useState('USER'); // 'USER' o 'HOSTEL'
 
-  const handleIngresar = () => {
-    // 1. VALIDACIÓN: Buscar si el usuario existe en localStorage
-    const usuarioEncontrado = usuarios.find(
-      (u) => u.correo === form.correo && u.contrasena === form.contrasena
-    );
+  // Estados de hover para interactividad premium
+  const [hoverBtn, setHoverBtn] = useState(false);
+  const [hoverLink1, setHoverLink1] = useState(false);
+  const [hoverLink2, setHoverLink2] = useState(false);
 
-    if (usuarioEncontrado) {
-      // 2. Si existe, lo logueamos en el Contexto
-      login(usuarioEncontrado); 
-      
-      // 3. Redirigimos según el rol
-      if (usuarioEncontrado.role === 'admin') {
+  const handleIngresar = async () => {
+    if (!form.correo || !form.contrasena) {
+      setError('Por favor, ingresa tu correo y contraseña.');
+      return;
+    }
+
+    setError('');
+
+    try {
+      // 1. Llamar a la mutación de React Query para iniciar sesión
+      const loginData = await login({ correo: form.correo, contrasena: form.contrasena });
+
+      // 2. Redirigir según el rol real de su cuenta
+      const userRoleLower = loginData.user?.role?.toLowerCase();
+      if (userRoleLower === 'admin') {
         nav('/admin');
       } else {
-        nav('/dashboard/catalogo'); 
+        nav('/dashboard/catalogo');
       }
-    } else {
-      // 4. Si no existe, mostramos error y NO dejamos pasar
-      setError(
-        'Correo o contraseña incorrectos. Regístrate si no tienes cuenta.'
-      );
+    } catch (err) {
+      console.error('Error al iniciar sesión:', err);
+      const msg = err?.message || 'Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.';
+      setError(msg);
     }
   };
 
   return (
-    <>
-      <div style={styles.wrapper}>
-        <div style={styles.container}>
-          <div style={styles.card}>
-            <h3 style={styles.title}>Iniciar Sesión</h3>
+    <div style={styles.wrapper}>
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <h3 style={styles.title}>Iniciar Sesión</h3>
 
-            {/* AGREGAMOS EL MENSAJE DE ERROR AQUÍ */}
-            {error && <p style={styles.error}>{error}</p>}
-
-            <input
-              style={styles.input}
-              placeholder="Correo electrónico"
-              onChange={(e) => setForm({ ...form, correo: e.target.value })}
-            />
-
-            <input
-              style={styles.input}
-              type="password"
-              placeholder="Contraseña"
-              onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
-            />
-
-            {/* ERROR CORREGIDO: Ahora llama a handleIngresar */}
-            <button style={styles.btn} onClick={handleIngresar}>
-              Ingresar
-            </button>
-
-            {/* BOTÓN TEMPORAL PARA DESARROLLO - BORRAR EN PRODUCCIÓN */}
-            <button 
-              style={{ ...styles.btn, background: '#4a654f', marginTop: '10px' }} 
-              onClick={() => {
-                login({
-                  id: 'admin-dev',
-                  name: 'Admin Test',
-                  correo: 'admin@test.com',
-                  role: 'admin'
-                });
-                nav('/admin/pets');
+          {/* Selector interactivo de perfil */}
+          <div style={styles.tabContainer}>
+            <button
+              type="button"
+              style={{
+                ...styles.tabButton,
+                ...(selectedRole === 'USER' ? styles.tabButtonActive : {}),
               }}
+              onClick={() => setSelectedRole('USER')}
             >
-              Entrar como Admin (Dev)
+              🐾 Adoptante
             </button>
-
-            <p style={styles.link} onClick={() => nav('/recuperar-contrasena')}>
-              ¿Olvidaste tu contraseña?
-            </p>
-            <p style={styles.link} onClick={() => nav('/registro')}>
-              ¿No tienes cuenta? <b>Regístrate</b>
-            </p>
+            <button
+              type="button"
+              style={{
+                ...styles.tabButton,
+                ...(selectedRole === 'HOSTEL' ? styles.tabButtonActive : {}),
+              }}
+              onClick={() => setSelectedRole('HOSTEL')}
+            >
+              🏠 Albergue
+            </button>
           </div>
+
+          <p style={styles.subtitle}>
+            {selectedRole === 'USER'
+              ? 'Encuentra a tu nuevo compañero de vida'
+              : 'Administra tus publicaciones y rescates'}
+          </p>
+
+          {error && <p style={styles.error}>{error}</p>}
+
+          <input
+            style={styles.input}
+            type="email"
+            placeholder="Correo electrónico"
+            value={form.correo}
+            onChange={(e) => setForm({ ...form, correo: e.target.value })}
+            onKeyDown={(e) => e.key === 'Enter' && handleIngresar()}
+          />
+
+          <input
+            style={styles.input}
+            type="password"
+            placeholder="Contraseña"
+            value={form.contrasena}
+            onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
+            onKeyDown={(e) => e.key === 'Enter' && handleIngresar()}
+          />
+
+          <button
+            style={{
+              ...styles.btn,
+              ...(hoverBtn ? styles.btnHover : {}),
+              ...(isLoggingIn ? styles.btnDisabled : {}),
+            }}
+            onClick={handleIngresar}
+            disabled={isLoggingIn}
+            onMouseEnter={() => !isLoggingIn && setHoverBtn(true)}
+            onMouseLeave={() => setHoverBtn(false)}
+          >
+            {isLoggingIn ? (
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                style={{ marginRight: '8px' }}
+              ></span>
+            ) : null}
+            {isLoggingIn ? 'Iniciando sesión...' : 'Ingresar'}
+          </button>
+
+          <p
+            style={{ ...styles.link, color: hoverLink1 ? '#3A5044' : '#5F7E6D' }}
+            onClick={() => nav('/recuperar-contrasena')}
+            onMouseEnter={() => setHoverLink1(true)}
+            onMouseLeave={() => setHoverLink1(false)}
+          >
+            ¿Olvidaste tu contraseña?
+          </p>
+
+          <p
+            style={{ ...styles.link, color: hoverLink2 ? '#3A5044' : '#5F7E6D' }}
+            onClick={() => nav('/registro', { state: { role: selectedRole } })}
+            onMouseEnter={() => setHoverLink2(true)}
+            onMouseLeave={() => setHoverLink2(false)}
+          >
+            ¿No tienes cuenta?{' '}
+            <b>Regístrate como {selectedRole === 'USER' ? 'Adoptante' : 'Albergue'}</b>
+          </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -95,21 +146,26 @@ const styles = {
   wrapper: {
     paddingTop: '90px',
     paddingBottom: '60px',
-    background: '#F7F7F2',
+    background: 'linear-gradient(135deg, #F3F6F4 0%, #E7ECE8 100%)',
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     boxSizing: 'border-box',
+    fontFamily: "'Inter', 'Roboto', sans-serif",
   },
   container: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     background: 'transparent',
-    padding: '2rem 0',
+    width: '100%',
   },
   card: {
     background: 'white',
     padding: '2.5rem',
     borderRadius: '24px',
-    boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+    boxShadow: '0 8px 32px rgba(95, 126, 109, 0.08)',
     width: '400px',
   },
   title: {
@@ -117,7 +173,37 @@ const styles = {
     color: '#5F7E6D',
     fontSize: '1.4rem',
     fontWeight: '600',
-    marginBottom: '1.8rem',
+    marginBottom: '1rem',
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: '#7A8F82',
+    fontSize: '0.9rem',
+    marginBottom: '1.5rem',
+  },
+  tabContainer: {
+    display: 'flex',
+    background: '#EAEFEA',
+    borderRadius: '12px',
+    padding: '4px',
+    marginBottom: '1rem',
+  },
+  tabButton: {
+    flex: 1,
+    padding: '10px',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    color: '#7A8F82',
+    border: 'none',
+    background: 'transparent',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+  },
+  tabButtonActive: {
+    background: '#8DAA91',
+    color: 'white',
+    boxShadow: '0 2px 6px rgba(141, 170, 145, 0.2)',
   },
   input: {
     width: '100%',
@@ -140,6 +226,14 @@ const styles = {
     fontWeight: '700',
     fontSize: '1rem',
     marginBottom: '1rem',
+    transition: 'all 0.2s ease',
+  },
+  btnHover: {
+    background: '#799A7D',
+  },
+  btnDisabled: {
+    background: '#BDCBD0',
+    cursor: 'not-allowed',
   },
   link: {
     textAlign: 'center',
@@ -148,14 +242,14 @@ const styles = {
     cursor: 'pointer',
     fontSize: '0.9rem',
   },
-  // Estilo para el mensaje de error
   error: {
-    color: '#d32f2f',
+    color: '#C0392B',
     textAlign: 'center',
     marginBottom: '15px',
     fontSize: '0.85rem',
-    background: '#ffebee',
+    background: '#FDEDEC',
     padding: '10px',
     borderRadius: '10px',
+    border: '1px solid #FADBD8',
   },
 };
