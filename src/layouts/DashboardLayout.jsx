@@ -20,7 +20,9 @@ const DashboardLayout = () => {
     { to: '/admin/users', label: 'Gestionar Usuarios' },
   ];
 
-  const links = user?.role === 'admin' ? adminLinks : userLinks;
+  const userRoleLower = user?.role?.toLowerCase();
+  const links = userRoleLower === 'admin' ? adminLinks : userLinks;
+
 
   // Auto-close sidebar on mobile when navigating
   useEffect(() => {
@@ -108,7 +110,7 @@ const DashboardLayout = () => {
         <hr style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
         <div className="mt-auto">
           <p className="small mb-3 text-white" style={{ opacity: 0.8 }}>
-            Logueado como: <strong>{user?.name}</strong>
+            Logueado como: <strong>{user?.fullName || user?.name}</strong>
           </p>
           <button
             onClick={logout}
