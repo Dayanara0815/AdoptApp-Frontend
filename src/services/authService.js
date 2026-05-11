@@ -38,4 +38,30 @@ export const authService = {
   getUserById: async (id) => {
     return await api.get(`/users/${id}`);
   },
+
+  updateUser: async (id, updatedData) => {
+    // Si se envían nombres y apellidos por separado en el frontend, los unimos para el backend
+    const fullName = updatedData.fullName || (updatedData.nombres && updatedData.apellidos ? `${updatedData.nombres} ${updatedData.apellidos}`.trim() : null);
+    
+    const payload = {};
+    if (fullName) payload.fullName = fullName;
+    if (updatedData.phone !== undefined) payload.phone = updatedData.phone;
+    if (updatedData.address !== undefined) payload.address = updatedData.address;
+
+    // Si viene la sección de hostel, la mapeamos estructurada
+    if (updatedData.hostel) {
+      payload.hostel = {
+        hostelName: updatedData.hostel.hostelName,
+        description: updatedData.hostel.description,
+        capacity: updatedData.hostel.capacity ? parseInt(updatedData.hostel.capacity, 10) : null,
+        logo: updatedData.hostel.logo || updatedData.avatar || '',
+        donationLink: updatedData.hostel.donationLink,
+        website: updatedData.hostel.website,
+        facebookUrl: updatedData.hostel.facebookUrl,
+        instagramUrl: updatedData.hostel.instagramUrl
+      };
+    }
+
+    return await api.put(`/users/${id}`, payload);
+  },
 };
