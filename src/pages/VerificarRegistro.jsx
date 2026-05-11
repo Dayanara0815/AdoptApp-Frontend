@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthMutations } from '../hooks/useAuthMutations';
+import { useToast } from '../context/ToastContext';
 
 export default function VerificarRegistro() {
   const nav = useNavigate();
+  const { showToast } = useToast();
   const { register, login, isRegistering, isLoggingIn } = useAuthMutations();
   const correo = localStorage.getItem('temp_correo') || 'usuario@correo.com';
 
@@ -41,6 +43,8 @@ export default function VerificarRegistro() {
             contrasena: tempUser.contrasena || tempUser.password,
           });
 
+          showToast('¡Cuenta registrada y verificada con éxito! 🎉🐾', 'success');
+
           // Limpiar datos temporales
           localStorage.removeItem('temp_user');
           localStorage.removeItem('temp_correo');
@@ -51,12 +55,17 @@ export default function VerificarRegistro() {
           console.error('Error durante la persistencia en el servidor:', err);
           const errMsg = err?.message || 'Error al guardar la cuenta en la base de datos principal. Inténtalo de nuevo.';
           setError(errMsg);
+          showToast(errMsg, 'error');
         }
       } else {
-        setError('No se encontraron los datos temporales del registro. Por favor, regístrate de nuevo.');
+        const errMsg = 'No se encontraron los datos temporales del registro. Por favor, regístrate de nuevo.';
+        setError(errMsg);
+        showToast(errMsg, 'error');
       }
     } else {
-      setError('Código incorrecto. Revisa el que salió en la ventana emergente.');
+      const errMsg = 'Código incorrecto. Revisa el que salió en la ventana emergente.';
+      setError(errMsg);
+      showToast(errMsg, 'error');
     }
   };
 
@@ -65,6 +74,7 @@ export default function VerificarRegistro() {
     const nuevoCodigo = Math.floor(100000 + Math.random() * 900000).toString();
     localStorage.setItem('temp_code', nuevoCodigo);
 
+    showToast('🐾 Nuevo código de verificación enviado con éxito', 'info');
     alert(`Tu nuevo código de verificación es: ${nuevoCodigo}`);
 
     setSegundos(60);
