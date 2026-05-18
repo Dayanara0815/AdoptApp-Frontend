@@ -3,9 +3,6 @@ import {
   Table,
   Button,
   Modal,
-  Form,
-  Row,
-  Col,
   Card,
   Alert,
 } from 'react-bootstrap';
@@ -14,12 +11,11 @@ import {
   FaTrash,
   FaCheckCircle,
   FaPaw,
-  FaCamera,
-  FaTimes,
 } from 'react-icons/fa';
 
 import { useAuth } from '../../context/authStore';
 import { usePets, useUserPets } from '../../hooks/usePets';
+import PetFormModal from '../../components/dashboard/PetFormModal';
 
 const MyPublications = () => {
   const { user } = useAuth();
@@ -28,25 +24,12 @@ const MyPublications = () => {
   const { data: pets = [], isLoading, isError, error } = useUserPets(user?.id);
 
   const {
-    createPet,
     updatePet,
     deletePet,
-    isCreating,
-    isUpdating,
-    isDeleting,
   } = usePets();
 
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    species: 'dogs',
-    age: '',
-    color: '',
-    size: 'Pequeño',
-    description: '',
-    image: '',
-  });
 
   // Estado para modales de confirmación (Adoptado / Eliminar)
   const [confirmModal, setConfirmModal] = useState({
@@ -54,93 +37,16 @@ const MyPublications = () => {
     type: '',
     pet: null,
   });
-  const [imagePreview, setImagePreview] = useState(null);
 
   // --- MANEJADORES DE FORMULARIO ---
   const handleOpenForm = (pet = null) => {
-    if (pet) {
-      setEditingPet(pet);
-      setFormData({
-        name: pet.name || '',
-        species: pet.species || 'dogs',
-        age: pet.age || '',
-        color: pet.color || '',
-        size: pet.size || 'Pequeño',
-        description: pet.description || '',
-        image: pet.image || '',
-      });
-      setImagePreview(pet.image);
-    } else {
-      setEditingPet(null);
-      setFormData({
-        name: '',
-        species: 'dogs',
-        age: '',
-        color: '',
-        size: 'Pequeño',
-        description: '',
-        image: '',
-      });
-      setImagePreview(null);
-    }
+    setEditingPet(pet);
     setShowFormModal(true);
   };
 
   const handleCloseForm = () => {
     setShowFormModal(false);
     setEditingPet(null);
-    setImagePreview(null);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, image: reader.result });
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleRemoveImage = () => {
-    setFormData({ ...formData, image: '' });
-    setImagePreview(null);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editingPet) {
-        await updatePet({
-          id: editingPet.id || editingPet._id,
-          data: {
-            ...formData,
-            userId: user?.id,
-          },
-        });
-      } else {
-        const newPet = {
-          ...formData,
-          isAdopted: false,
-          status: 'Buscando hogar',
-          userId: user?.id,
-          image:
-            formData.image ||
-            'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop',
-        };
-        await createPet(newPet);
-      }
-      handleCloseForm();
-    } catch (err) {
-      console.error('Error al procesar mascota:', err);
-    }
   };
 
   // --- MANEJADORES DE ACCIONES RÁPIDAS ---
@@ -157,12 +63,23 @@ const MyPublications = () => {
     const petId = pet?.id || pet?._id;
     try {
       if (type === 'adopt') {
+        let mappedSpecies = 'OTHER';
+        if (pet.species === 'dogs' || pet.species === 'DOG') mappedSpecies = 'DOG';
+        else if (pet.species === 'cats' || pet.species === 'CAT') mappedSpecies = 'CAT';
+
+        let mappedSize = 'SMALL';
+        if (pet.size === 'Pequeño' || pet.size === 'SMALL') mappedSize = 'SMALL';
+        else if (pet.size === 'Mediano' || pet.size === 'MEDIUM') mappedSize = 'MEDIUM';
+        else if (pet.size === 'Grande' || pet.size === 'LARGE') mappedSize = 'LARGE';
+
         await updatePet({
           id: petId,
           data: {
             ...pet,
+            species: mappedSpecies,
+            size: mappedSize,
             isAdopted: true,
-            status: 'Adoptado',
+            status: 'ADOPTED',
           },
         });
       } else if (type === 'delete') {
@@ -285,11 +202,11 @@ const MyPublications = () => {
                       </td>
                       <td className="p-4 fw-bold text-dark">{pet.name}</td>
                       <td className="p-4 text-muted">
-                        {pet.species === 'dogs'
+                        {pet.species === 'dogs' || pet.species === 'DOG'
                           ? 'Perro'
-                          : pet.species === 'cats'
+                          : pet.species === 'cats' || pet.species === 'CAT'
                             ? 'Gato'
-                            : pet.species === 'others'
+                            : pet.species === 'others' || pet.species === 'OTHER'
                               ? 'Otro'
                               : pet.species}
                       </td>
@@ -350,224 +267,11 @@ const MyPublications = () => {
       </Card>
 
       {/* MODAL: REGISTRO / EDICIÓN */}
-      <Modal show={showFormModal} onHide={handleCloseForm} size="lg" centered>
-        <Modal.Header closeButton className="border-0 px-4 pt-4">
-          <Modal.Title
-            className="fw-bold"
-            style={{ color: 'var(--color-primary-700)' }}
-          >
-            {editingPet
-              ? `Editar a ${editingPet.name}`
-              : 'Registrar Nueva Mascota'}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="px-4 pb-4">
-          <Form onSubmit={handleSubmit}>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold small">
-                    Nombre de la mascota
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Ej. Max"
-                    required
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: '12px',
-                    }}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold small">Especie</Form.Label>
-                  <Form.Select
-                    name="species"
-                    value={formData.species}
-                    onChange={handleChange}
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: '12px',
-                    }}
-                  >
-                    <option value="dogs">Perro</option>
-                    <option value="cats">Gato</option>
-                    <option value="others">Otro</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold small">Edad</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleChange}
-                    placeholder="Ej. 2 años"
-                    required
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: '12px',
-                    }}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold small">Color</Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="color"
-                    value={formData.color}
-                    onChange={handleChange}
-                    placeholder="Ej. Canela"
-                    required
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: '12px',
-                    }}
-                  />
-                </Form.Group>
-              </Col>
-              <Col md={4}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="fw-bold small">Tamaño</Form.Label>
-                  <Form.Select
-                    name="size"
-                    value={formData.size}
-                    onChange={handleChange}
-                    style={{
-                      borderRadius: 'var(--radius-md)',
-                      padding: '12px',
-                    }}
-                  >
-                    <option>Pequeño</option>
-                    <option>Mediano</option>
-                    <option>Grande</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Form.Group className="mb-3">
-              <Form.Label className="fw-bold small">
-                Foto de la mascota
-              </Form.Label>
-              <div
-                className="d-flex flex-column align-items-center p-4 border-dashed rounded-3 text-center"
-                style={{
-                  border: '2px dashed var(--color-neutral-300)',
-                  backgroundColor: 'var(--color-neutral-50)',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  transition: 'all 0.2s ease',
-                }}
-                onClick={() => document.getElementById('petImageInput').click()}
-              >
-                {imagePreview ? (
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                      maxWidth: '300px',
-                    }}
-                  >
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      style={{
-                        width: '100%',
-                        height: '200px',
-                        objectFit: 'cover',
-                        borderRadius: 'var(--radius-md)',
-                      }}
-                    />
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      className="position-absolute top-0 end-0 m-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveImage();
-                      }}
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        padding: '0',
-                        fontSize: '0.7rem',
-                        border: '2px solid white',
-                      }}
-                    >
-                      <FaTimes />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="py-2">
-                    <FaCamera size={40} className="text-muted mb-2" />
-                    <p className="mb-0 text-muted small">
-                      Haz clic para subir una foto
-                    </p>
-                    <span
-                      className="text-secondary"
-                      style={{ fontSize: '0.75rem' }}
-                    >
-                      JPG, PNG (Máx. 5MB)
-                    </span>
-                  </div>
-                )}
-                <Form.Control
-                  id="petImageInput"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="d-none"
-                />
-              </div>
-            </Form.Group>
-
-            <Form.Group className="mb-4">
-              <Form.Label className="fw-bold small">
-                Descripción / Historia
-              </Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Cuenta un poco sobre su temperamento..."
-                style={{ borderRadius: 'var(--radius-md)', padding: '12px' }}
-              />
-            </Form.Group>
-
-            <div className="d-flex gap-2 justify-content-end">
-              <Button
-                variant="light"
-                onClick={handleCloseForm}
-                className="rounded-pill px-4 text-muted fw-bold"
-              >
-                Cancelar
-              </Button>
-              <Button
-                variant="primary"
-                type="submit"
-                className="rounded-pill px-5 fw-bold shadow-sm"
-              >
-                {editingPet ? 'Guardar Cambios' : 'Publicar Mascota'}
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <PetFormModal
+        show={showFormModal}
+        onHide={handleCloseForm}
+        editingPet={editingPet}
+      />
 
       {/* MODAL: CONFIRMACIÓN (ADOPTADO / ELIMINAR) */}
       <Modal show={confirmModal.show} onHide={closeConfirm} centered border="0">
