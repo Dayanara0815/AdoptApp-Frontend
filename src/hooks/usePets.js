@@ -6,13 +6,14 @@ export const usePets = () => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
 
-  // Query para obtener todas las mascotas
+  // Query para obtener todas las mascotas (excluyendo DELETED)
   const petsQuery = useQuery({
     queryKey: ['pets'],
     queryFn: async () => {
       const response = await petService.getAllPets();
       return response.data;
     },
+    select: (data) => (data ?? []).filter((pet) => pet.status !== 'DELETED'),
   });
 
   // Mutation para crear una mascota
@@ -27,19 +28,23 @@ export const usePets = () => {
     },
   });
 
-  // Mutation para actualizar una mascota
+  // Mutation para actualizar una mascota (maneja tanto actualización normal como soft delete)
   const updatePetMutation = useMutation({
     mutationFn: ({ id, data }) => petService.updatePet(id, data),
-    onSuccess: () => {
+    onSuccess: (res, variables) => {
       queryClient.invalidateQueries({ queryKey: ['pets'] });
-      showToast('🐾 Mascota actualizada correctamente.', 'success');
+      if (variables.data?.status === 'DELETED') {
+        showToast('🗑️ Mascota retirada del catálogo.', 'warning');
+      } else {
+        showToast('🐾 Mascota actualizada correctamente.', 'success');
+      }
     },
     onError: (error) => {
       showToast(error?.message || 'Error al actualizar la mascota.', 'error');
     },
   });
 
-  // Mutation para eliminar una mascota
+  // Mutation para eliminar físicamente una mascota (se mantiene por retrocompatibilidad)
   const deletePetMutation = useMutation({
     mutationFn: petService.deletePet,
     onSuccess: () => {
@@ -69,7 +74,7 @@ export const usePets = () => {
   };
 };
 
-// Hook específico para mascotas de un usuario
+// Hook específico para mascotas de un usuario (excluyendo DELETED)
 export const useUserPets = (userId) => {
   return useQuery({
     queryKey: ['pets', 'user', userId],
@@ -77,6 +82,7 @@ export const useUserPets = (userId) => {
       const response = await petService.getPetsByUserId(userId);
       return response.data;
     },
+    select: (data) => (data ?? []).filter((pet) => pet.status !== 'DELETED' && pet.status !== 'deleted'),
     enabled: !!userId, // Solo se ejecuta si hay un userId
   });
 };
