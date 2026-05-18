@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import aiAvatar from '../../assets/ai-avatar.png';
 
 export default function Drawer({
   isOpen,
@@ -85,7 +86,22 @@ export default function Drawer({
         {/* Auth Section */}
         <div className="drawer-footer">
           {user ? (
-            <>
+            <div className="d-flex flex-column gap-3 w-100">
+              <div className="d-flex align-items-center gap-3 p-3 bg-light rounded-custom border">
+                <img
+                  src={user?.avatar || user?.hostel?.logo || aiAvatar}
+                  alt="Avatar"
+                  style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }}
+                />
+                <div style={{ overflow: 'hidden' }}>
+                  <div className="fw-bold text-truncate" style={{ fontSize: '0.95rem', color: 'var(--primary)' }}>
+                    {user?.hostel?.hostelName || user?.fullName || 'Usuario'}
+                  </div>
+                  <div className="text-muted text-truncate" style={{ fontSize: '0.75rem' }}>
+                    {user?.email || user?.correo}
+                  </div>
+                </div>
+              </div>
               <button
                 className="btn-landing-outline"
                 onClick={() => {
@@ -97,19 +113,36 @@ export default function Drawer({
                   );
                 }}
               >
+                <span className="material-symbols-outlined me-2">dashboard</span>
                 Mi Panel
               </button>
+
+              {user.role?.toUpperCase() !== 'ADMIN' && (
+                <button
+                  className="btn-landing-outline"
+                  onClick={() => {
+                    onClose();
+                    navigate('/dashboard/profile');
+                  }}
+                >
+                  <span className="material-symbols-outlined me-2">person</span>
+                  Mi Perfil
+                </button>
+              )}
+
               <button
-                className="btn-landing-primary"
+                className="btn-landing-primary w-100"
                 onClick={() => {
                   onClose();
                   logout();
                   navigate('/');
                 }}
+                style={{ backgroundColor: '#d9534f', borderColor: '#d9534f' }}
               >
-                Salir
+                <span className="material-symbols-outlined me-2">logout</span>
+                Cerrar Sesión
               </button>
-            </>
+            </div>
           ) : (
             <>
               <button
