@@ -12,6 +12,7 @@ export const authService = {
       fullName,
       email: userData.correo || userData.email,
       password: userData.contrasena || userData.password,
+      dni: userData.dni || '',
       role: userData.role || 'USER',
       phone: userData.phone || '',
       address: userData.address || ''

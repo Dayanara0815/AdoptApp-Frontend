@@ -37,3 +37,25 @@ export function formatMonthYear(dateString: string | null | undefined): string {
     return 'No disponible';
   }
 }
+
+/**
+ * Resuelve la URL absoluta de la imagen de una mascota.
+ * Si es una URL absoluta o base64, la retorna tal cual.
+ * Si es una ruta del microservicio de archivos (/api/files/nombre o api/files/nombre),
+ * la concatena con la URL del microservicio de archivos.
+ */
+export function getPetImageUrl(image: string | null | undefined): string {
+  if (!image) {
+    return 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&h=600&fit=crop';
+  }
+  if (image.startsWith('data:') || image.startsWith('http://') || image.startsWith('https://')) {
+    return image;
+  }
+  if (image.startsWith('/api/files/') || image.startsWith('api/files/')) {
+    const fileServiceUrl = (import.meta as any).env.VITE_FILE_SERVICE_URL || 'http://localhost:7071';
+    const normalizedPath = image.startsWith('/') ? image : `/${image}`;
+    return `${fileServiceUrl}${normalizedPath}`;
+  }
+  return image;
+}
+
