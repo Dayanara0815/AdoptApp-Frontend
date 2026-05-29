@@ -59,7 +59,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed-top">
+    <header className="landing-header">
       <nav className="landing-navbar navbar navbar-expand-md">
         <div className="container px-4">
           <a
