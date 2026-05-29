@@ -12,9 +12,15 @@ const api = axios.create({
 // Interceptor para agregar el token JWT en cada petición
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Definimos las rutas que no requieren autenticación (públicas)
+    const publicPaths = ['/users/login', '/users/register'];
+    const isPublicPath = publicPaths.some(path => config.url && config.url.endsWith(path));
+
+    if (!isPublicPath) {
+      const token = localStorage.getItem('token');
+      if (token && token !== 'null' && token !== 'undefined') {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

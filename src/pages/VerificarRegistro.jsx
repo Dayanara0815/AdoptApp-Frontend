@@ -129,7 +129,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
+    minHeight: 'calc(100vh - 85px)',
     background: 'linear-gradient(135deg, #F3F6F4 0%, #E7ECE8 100%)',
     fontFamily: "'Inter', 'Roboto', sans-serif",
   },
