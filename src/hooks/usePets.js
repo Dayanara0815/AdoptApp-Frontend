@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { petService } from '../services/petService';
 import { useToast } from '../context/ToastContext';
 
@@ -84,5 +84,58 @@ export const useUserPets = (userId) => {
     },
     select: (data) => (data ?? []).filter((pet) => pet.status !== 'DELETED' && pet.status !== 'deleted'),
     enabled: !!userId, // Solo se ejecuta si hay un userId
+  });
+};
+
+// Hook para obtener mascotas paginadas y filtradas para el catálogo
+export const usePetsPage = (page, size, status = 'AVAILABLE', filters = {}, searchQuery = '') => {
+  return useQuery({
+    queryKey: ['pets', 'page', page, size, status, filters, searchQuery],
+    queryFn: async () => {
+      const params = {
+        page,
+        sizeVal: size,
+        status,
+      };
+
+      if (filters.species && filters.species.length > 0) {
+        const mappedSpecies = filters.species.map((s) => {
+          if (s === 'dogs') return 'DOG';
+          if (s === 'cats') return 'CAT';
+          return 'OTHER';
+        });
+        params.species = mappedSpecies.join(',');
+      }
+
+      if (filters.size && filters.size !== 'Todos los Tamaños') {
+        let mappedSize = 'SMALL';
+        if (filters.size === 'Pequeño') mappedSize = 'SMALL';
+        else if (filters.size === 'Mediano') mappedSize = 'MEDIUM';
+        else if (filters.size === 'Grande') mappedSize = 'LARGE';
+        params.size = mappedSize;
+      }
+
+      if (searchQuery) {
+        params.search = searchQuery;
+      }
+
+      console.log('Fetching page with params:', params);
+      try {
+        const response = await petService.getPetsPage(params);
+        console.log('Raw response from backend:', response);
+        if (!response) {
+          throw new Error('Response is undefined or null');
+        }
+        // Fallback in case the response is already response.data or apiResponse.data
+        if (response.data !== undefined) {
+          return response.data;
+        }
+        return response;
+      } catch (err) {
+        console.error('Error fetching pets page:', err);
+        throw err;
+      }
+    },
+    placeholderData: keepPreviousData,
   });
 };

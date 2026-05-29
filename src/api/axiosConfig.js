@@ -30,11 +30,23 @@ api.interceptors.request.use(
 );
 
 
-// Interceptor para manejar respuestas globales (opcional)
+// Interceptor para manejar respuestas globales
 api.interceptors.response.use(
-  (response) => response.data, // Retornamos directamente el ApiResponse<T>
+  (response) => {
+    const data = response.data;
+    if (data && typeof data === 'object' && 'code' in data) {
+      // Si el código no es éxito ("000" o "200"), lo rechazamos como error de negocio
+      if (data.code !== '000' && data.code !== '0000' && data.code !== '200') {
+        return Promise.reject({
+          code: data.code,
+          message: data.message || 'Error en la operación del servidor',
+        });
+      }
+    }
+    return response.data; // Retornamos directamente el ApiResponse<T>
+  },
   (error) => {
-    // Si el backend devuelve un error estructurado, lo propagamos
+    // Si el backend devuelve un error estructurado en el cuerpo, lo propagamos
     if (error.response && error.response.data) {
       return Promise.reject(error.response.data);
     }
