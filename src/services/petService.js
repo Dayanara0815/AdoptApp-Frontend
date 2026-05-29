@@ -5,6 +5,10 @@ export const petService = {
     return await api.get('/pets');
   },
 
+  getPetsPage: async (params) => {
+    return await api.get('/pets/page', { params });
+  },
+
   getPetById: async (id) => {
     return await api.get(`/pets/${id}`);
   },
