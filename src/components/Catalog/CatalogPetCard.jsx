@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPetImageUrl } from '../../lib';
 
 const PetCard = ({
     name,
@@ -20,11 +21,12 @@ const PetCard = ({
             {/* Image Container */}
             <div className="position-relative overflow-hidden rounded-xl m-3" style={{ aspectRatio: '4/5' }}>
                 <img
-                    src={image}
+                    src={getPetImageUrl(image)}
                     alt={`${name}`}
                     className="w-100 h-100 object-fit-cover"
                     style={{ transition: 'transform 0.7s' }}
                 />
+
 
                 {/* Badges */}
                 {(isNewArrival || isSpecialNeed) && (

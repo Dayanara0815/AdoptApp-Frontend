@@ -18,6 +18,7 @@ export default function Registro() {
   const [form, setForm] = useState({
     nombres: '',
     apellidos: '',
+    dni: '',
     fechaNacimiento: '',
     correo: '',
     contrasena: '',
@@ -48,15 +49,15 @@ export default function Registro() {
     setError('');
 
     if (form.role === 'USER') {
-      if (!form.nombres || !form.apellidos || !form.fechaNacimiento) {
-        const msg = 'Por favor, completa tus nombres, apellidos y fecha de nacimiento.';
+      if (!form.nombres || !form.apellidos || !form.dni || !form.fechaNacimiento) {
+        const msg = 'Por favor, completa tus nombres, apellidos, DNI y fecha de nacimiento.';
         setError(msg);
         showToast(msg, 'warning');
         return;
       }
     } else if (form.role === 'HOSTEL') {
-      if (!form.hostelName || !form.phone || !form.address) {
-        const msg = 'Por favor, completa el nombre, teléfono y dirección física de tu albergue.';
+      if (!form.hostelName || !form.phone || !form.address || !form.dni) {
+        const msg = 'Por favor, completa el nombre, DNI del representante, teléfono y dirección del albergue.';
         setError(msg);
         showToast(msg, 'warning');
         return;
@@ -631,6 +632,20 @@ export default function Registro() {
                       </div>
                     </div>
 
+                    <div className="input-group-custom">
+                      <input
+                        className="input-custom"
+                        placeholder="DNI (Documento Nacional de Identidad)"
+                        value={form.dni}
+                        maxLength={8}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          setForm({ ...form, dni: val });
+                        }}
+                      />
+                      <FaUser className="input-icon" />
+                    </div>
+
                     <div className="input-group-custom has-label">
                       <label className="input-label-custom">Fecha de nacimiento</label>
                       <input
@@ -676,6 +691,20 @@ export default function Registro() {
                         onChange={(e) => setForm({ ...form, hostelName: e.target.value })}
                       />
                       <FaHome className="input-icon" />
+                    </div>
+
+                    <div className="input-group-custom">
+                      <input
+                        className="input-custom"
+                        placeholder="DNI del representante legal"
+                        value={form.dni}
+                        maxLength={8}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          setForm({ ...form, dni: val });
+                        }}
+                      />
+                      <FaUser className="input-icon" />
                     </div>
 
                     <div className="input-row-grid">

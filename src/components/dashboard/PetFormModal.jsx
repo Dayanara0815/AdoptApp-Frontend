@@ -15,10 +15,13 @@ import {
 } from 'react-icons/fa';
 import { useAuth } from '../../context/authStore';
 import { usePets } from '../../hooks/usePets';
+import { useUploadFile } from '../../hooks/useUploadFile';
+import { getPetImageUrl } from '../../lib';
 
 const PetFormModal = ({ show, onHide, editingPet }) => {
   const { user } = useAuth();
   const { createPet, updatePet, isCreating, isUpdating } = usePets();
+  const { uploadFile, isUploading } = useUploadFile();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -31,6 +34,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
   // Cargar datos en el formulario cuando se abre el modal para edición
@@ -58,7 +62,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           description: editingPet.description || '',
           image: editingPet.image || '',
         });
-        setImagePreview(editingPet.image || null);
+        setImagePreview(editingPet.image ? getPetImageUrl(editingPet.image) : null);
       } else {
         setFormData({
           name: '',
@@ -79,18 +83,21 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const processFile = (file) => {
+  const processFile = async (file) => {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         alert('La imagen no debe superar los 5MB.');
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, image: reader.result }));
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const uploadRes = await uploadFile(file);
+        const relativePath = `/api/files/${uploadRes.fileName}`;
+        setFormData((prev) => ({ ...prev, image: relativePath }));
+        setImagePreview(getPetImageUrl(relativePath));
+      } catch (err) {
+        console.error('Error al subir imagen:', err);
+        setImagePreview(null);
+      }
     }
   };
 
@@ -156,14 +163,12 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
       } else {
         const newPet = {
           ...formData,
+          image: formData.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop',
           species: mappedSpecies,
           size: mappedSize,
           isAdopted: false,
           status: 'AVAILABLE',
           userId: user?.id,
-          image:
-            formData.image ||
-            'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop',
         };
         await createPet(newPet);
       }
@@ -173,7 +178,8 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
     }
   };
 
-  const isSaving = isCreating || isUpdating;
+  const isSaving = isCreating || isUpdating || isUploading;
+
 
   return (
     <Modal
@@ -365,7 +371,12 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
               onClick={() => !isSaving && document.getElementById('petImageInput').click()}
               className="d-flex flex-column align-items-center justify-content-center text-center hover-scale shadow-sm"
             >
-              {imagePreview ? (
+              {isUploading ? (
+                <div className="py-4 d-flex flex-column align-items-center justify-content-center">
+                  <Spinner animation="border" variant="primary" className="mb-2" />
+                  <p className="mb-0 text-dark fw-medium small">Subiendo imagen al servidor...</p>
+                </div>
+              ) : imagePreview ? (
                 <div
                   style={{
                     position: 'relative',

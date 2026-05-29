@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../../context/authStore';
 import { usePets, useUserPets } from '../../hooks/usePets';
 import PetFormModal from '../../components/dashboard/PetFormModal';
+import { getPetImageUrl } from '../../lib';
 
 const MyPublications = () => {
   const { user } = useAuth();
@@ -186,10 +187,7 @@ const MyPublications = () => {
                     <tr key={petId} className="align-middle">
                       <td className="p-4">
                         <img
-                          src={
-                            pet.image ||
-                            'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop'
-                          }
+                          src={getPetImageUrl(pet.image)}
                           alt={pet.name}
                           style={{
                             width: '60px',

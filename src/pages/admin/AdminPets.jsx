@@ -1,6 +1,7 @@
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { mockPets } from '../../data/mockPets';
 import { Table, Badge, Button } from 'react-bootstrap';
+import { getPetImageUrl } from '../../lib';
 
 const AdminPets = () => {
   const { data: petsData } = useLocalStorage('catalogPets_v6', mockPets);
@@ -33,7 +34,7 @@ const AdminPets = () => {
                 <td className="px-4 py-3 align-middle">
                   <div className="d-flex align-items-center gap-3">
                     <img
-                      src={pet.image}
+                      src={getPetImageUrl(pet.image)}
                       alt={pet.name}
                       className="rounded-circle object-fit-cover"
                       style={{ width: '40px', height: '40px' }}

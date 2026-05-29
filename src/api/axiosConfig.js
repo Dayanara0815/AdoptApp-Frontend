@@ -57,4 +57,38 @@ api.interceptors.response.use(
   }
 );
 
+const FILE_SERVICE_URL = import.meta.env.VITE_FILE_SERVICE_URL || 'http://localhost:7071';
+
+export const fileApi = axios.create({
+  baseURL: FILE_SERVICE_URL,
+});
+
+fileApi.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token && token !== 'null' && token !== 'undefined') {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+fileApi.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  (error) => {
+    if (error.response && error.response.data) {
+      return Promise.reject(error.response.data);
+    }
+    return Promise.reject({
+      message: 'Error de conexión con el servidor de archivos',
+    });
+  }
+);
+
 export default api;
+
