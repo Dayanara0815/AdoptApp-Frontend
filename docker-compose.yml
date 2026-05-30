@@ -1,0 +1,22 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      args:
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+        VITE_FILE_SERVICE_URL: ${VITE_FILE_SERVICE_URL}
+
+    # Descomenta las siguientes líneas para exponer la app en el puerto 3000 localmente
+    # ports:
+    #   - "3000:80"
+
+    networks:
+      - ms-net
+
+    restart: unless-stopped
+
+networks:
+  ms-net:
+    external: true
+
