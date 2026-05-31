@@ -7,7 +7,10 @@ export const authService = {
 
   register: async (userData) => {
     // Si el frontend envía nombres/apellidos por separado, aquí los unimos para el backend
-    const fullName = userData.fullName || `${userData.nombres} ${userData.apellidos}`.trim();
+    const fullName = userData.fullName || 
+    (userData.role === 'HOSTEL' 
+      ? userData.hostelName 
+      : `${userData.nombres} ${userData.apellidos}`.trim());
     const payload = {
       fullName,
       email: userData.correo || userData.email,
@@ -28,7 +31,8 @@ export const authService = {
         donationLink: userData.donationLink || userData.hostel?.donationLink || '',
         website: userData.website || userData.hostel?.website || '',
         facebookUrl: userData.facebookUrl || userData.hostel?.facebookUrl || '',
-        instagramUrl: userData.instagramUrl || userData.hostel?.instagramUrl || ''
+        instagramUrl: userData.instagramUrl || userData.hostel?.instagramUrl || '',
+        address: userData.address || '' 
       };
     }
 
