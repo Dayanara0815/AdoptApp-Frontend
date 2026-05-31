@@ -236,16 +236,23 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
   const fileInputRef = useRef(null);
   const isHostel = profile.role?.toUpperCase() === 'HOSTEL';
   const { uploadFile, isUploading } = useUploadFile();
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    
+    // Preview inmediato antes de subir
+    const localPreview = URL.createObjectURL(file);
+    setAvatarPreview(localPreview);
+    
     try {
       const uploadRes = await uploadFile(file);
       const relativePath = `/api/files/${uploadRes.fileName}`;
       setForm({ ...form, avatar: relativePath });
     } catch (err) {
       console.error('Error al subir imagen:', err);
+      setAvatarPreview(null);
     }
   };
 
@@ -253,8 +260,8 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
     <div className="container-fluid p-0">
       <div className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
         <div className="avatar-container">
-          {profile.avatar 
-            ? <img src={getPetImageUrl(profile.avatar)} alt="Avatar" className="avatar-img" />
+          {avatarPreview || form.avatar
+            ? <img src={avatarPreview || getPetImageUrl(form.avatar)} alt="Avatar" className="avatar-img" />
             : <AvatarInitials name={profile.hostelName || profile.fullName} size={100} fontSize="2rem" />
           }
           <input
