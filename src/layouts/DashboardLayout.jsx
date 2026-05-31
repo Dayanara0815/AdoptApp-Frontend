@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import { useAuth } from '../context/authStore';
+import AvatarInitials from '../components/AvatarInitials';
 import aiAvatar from '../assets/ai-avatar.png';
 import { getPetImageUrl } from '../lib';
 
@@ -134,11 +135,10 @@ const DashboardLayout = () => {
 
         <div className="mt-auto pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="dashboard-sidebar-profile-card">
-            <img
-              src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
-              alt="Avatar de usuario"
-              className="dashboard-sidebar-avatar"
-            />
+            {user?.avatar 
+              ? <img src={getPetImageUrl(user.avatar)} alt="Avatar de usuario" className="dashboard-sidebar-avatar" />
+              : <AvatarInitials name={user?.hostel?.hostelName || user?.fullName} size={42} fontSize="1rem" />
+            }
             <div className="dashboard-sidebar-user-info">
               <div className="dashboard-sidebar-user-name text-truncate" title={user?.fullName || user?.hostel?.hostelName || 'Usuario'}>
                 {user?.fullName || user?.hostel?.hostelName || 'Usuario'}

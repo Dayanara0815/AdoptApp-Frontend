@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useSession } from '../../context/SessionContext';
 import { useToast } from '../../context/ToastContext';
+import AvatarInitials from '../../components/AvatarInitials';
 import { useAuthMutations } from '../../hooks/useAuthMutations';
 import { useUploadFile } from '../../hooks/useUploadFile';
 import { formatDate, formatMonthYear } from '../../lib';
@@ -31,11 +32,10 @@ const ProfileView = ({ profile, onEdit }) => {
     <div className="container-fluid p-0">
       <div className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
         <div className="avatar-container">
-          <img
-            src={profile.avatar ? getPetImageUrl(profile.avatar) : DEFAULT_AVATAR}
-            alt="Avatar"
-            className="avatar-img"
-          />
+          {profile.avatar 
+            ? <img src={getPetImageUrl(profile.avatar)} alt="Avatar" className="avatar-img" />
+            : <AvatarInitials name={profile.hostelName || profile.fullName} size={100} fontSize="2rem" />
+          }
           <div className="verified-badge">
             <MdVerifiedUser size={20} />
           </div>
@@ -253,11 +253,10 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
     <div className="container-fluid p-0">
       <div className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
         <div className="avatar-container">
-          <img
-            src={form.avatar ? getPetImageUrl(form.avatar) : DEFAULT_AVATAR}
-            alt="Avatar"
-            className="avatar-img"
-          />
+          {profile.avatar 
+            ? <img src={getPetImageUrl(profile.avatar)} alt="Avatar" className="avatar-img" />
+            : <AvatarInitials name={profile.hostelName || profile.fullName} size={100} fontSize="2rem" />
+          }
           <input
             ref={fileInputRef}
             type="file"

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import aiAvatar from '../../assets/ai-avatar.png';
+import AvatarInitials from '../AvatarInitials';
 import { getPetImageUrl } from '../../lib';
 
 export default function Drawer({
@@ -89,11 +89,10 @@ export default function Drawer({
           {user ? (
             <div className="d-flex flex-column gap-3 w-100">
               <div className="d-flex align-items-center gap-3 p-3 bg-light rounded-custom border">
-                <img
-                  src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
-                  alt="Avatar"
-                  style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }}
-                />
+                {user?.avatar 
+                  ? <img src={getPetImageUrl(user.avatar)} alt="Avatar" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }} />
+                  : <AvatarInitials name={user?.hostel?.hostelName || user?.fullName} size={48} fontSize="1.2rem" />
+                }
                 <div style={{ overflow: 'hidden' }}>
                   <div className="fw-bold text-truncate" style={{ fontSize: '0.95rem', color: 'var(--primary)' }}>
                     {user?.hostel?.hostelName || user?.fullName || 'Usuario'}

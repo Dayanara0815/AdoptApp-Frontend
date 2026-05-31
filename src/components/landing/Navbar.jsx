@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authStore';
 import Drawer from './Drawer';
-import aiAvatar from '../../assets/ai-avatar.png';
+import AvatarInitials from '../AvatarInitials';
 import { getPetImageUrl } from '../../lib';
 
 export default function Navbar() {
@@ -111,11 +111,10 @@ export default function Navbar() {
                     aria-expanded={dropdownOpen}
                     aria-label="Menú de usuario"
                   >
-                    <img
-                      src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
-                      alt="Avatar de usuario"
-                      className="nav-avatar-img"
-                    />
+                    {user?.avatar 
+                      ? <img src={getPetImageUrl(user.avatar)} alt="Avatar de usuario" className="nav-avatar-img" />
+                      : <AvatarInitials name={user?.hostel?.hostelName || user?.fullName} size={38} />
+                    }
                     <span className="material-symbols-outlined" style={{ color: 'var(--primary)', fontSize: '20px' }}>
                       {dropdownOpen ? 'expand_less' : 'expand_more'}
                     </span>
