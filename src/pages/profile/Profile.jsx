@@ -2,7 +2,9 @@ import { useState, useRef } from 'react';
 import { useSession } from '../../context/SessionContext';
 import { useToast } from '../../context/ToastContext';
 import { useAuthMutations } from '../../hooks/useAuthMutations';
+import { useUploadFile } from '../../hooks/useUploadFile';
 import { formatDate, formatMonthYear } from '../../lib';
+import { getPetImageUrl } from '../../lib';
 import Button from '../../components/Button';
 import {
   MdPerson,
@@ -30,7 +32,7 @@ const ProfileView = ({ profile, onEdit }) => {
       <div className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
         <div className="avatar-container">
           <img
-            src={profile.avatar || DEFAULT_AVATAR}
+            src={profile.avatar ? getPetImageUrl(profile.avatar) : DEFAULT_AVATAR}
             alt="Avatar"
             className="avatar-img"
           />
@@ -48,16 +50,24 @@ const ProfileView = ({ profile, onEdit }) => {
             {profile.address || 'Ubicación no especificada'}
           </p>
           <p className="text-muted mb-4 small">
-            Perfil: <b>{isHostel ? '🏠 Albergue Rescatista' : '🐾 Adoptante'}</b>
+            Perfil:{' '}
+            <b>{isHostel ? '🏠 Albergue Rescatista' : '🐾 Adoptante'}</b>
             {profile.createdAt && (
               <>
                 <span className="mx-2 text-muted">•</span>
-                Miembro desde: <b className="text-capitalize">{formatMonthYear(profile.createdAt)}</b>
+                Miembro desde:{' '}
+                <b className="text-capitalize">
+                  {formatMonthYear(profile.createdAt)}
+                </b>
               </>
             )}
             {profile.updatedAt && (
-              <span className="d-block mt-2 text-muted" style={{ fontSize: '0.8rem', opacity: 0.85 }}>
-                Última actualización: <b className="text-success">{formatDate(profile.updatedAt)}</b>
+              <span
+                className="d-block mt-2 text-muted"
+                style={{ fontSize: '0.8rem', opacity: 0.85 }}
+              >
+                Última actualización:{' '}
+                <b className="text-success">{formatDate(profile.updatedAt)}</b>
               </span>
             )}
           </p>
@@ -68,7 +78,9 @@ const ProfileView = ({ profile, onEdit }) => {
       </div>
 
       {/* Información detallada */}
-      <h3 className="mb-3 fs-5 text-success fw-bold text-uppercase">Información de la Cuenta</h3>
+      <h3 className="mb-3 fs-5 text-success fw-bold text-uppercase">
+        Información de la Cuenta
+      </h3>
       <div className="row g-4">
         {isHostel ? (
           // Vista detallada para Albergues
@@ -84,7 +96,8 @@ const ProfileView = ({ profile, onEdit }) => {
             <div className="col-12 col-md-6">
               <div className="info-card">
                 <div className="text-muted small fw-bold text-uppercase mb-1">
-                  <MdPerson className="me-2 text-success" /> Representante / Contacto
+                  <MdPerson className="me-2 text-success" /> Representante /
+                  Contacto
                 </div>
                 <div className="fs-5 fw-medium">{profile.fullName}</div>
               </div>
@@ -108,9 +121,12 @@ const ProfileView = ({ profile, onEdit }) => {
             <div className="col-12 col-md-6">
               <div className="info-card">
                 <div className="text-muted small fw-bold text-uppercase mb-1">
-                  <MdPeople className="me-2 text-success" /> Capacidad de Mascotas
+                  <MdPeople className="me-2 text-success" /> Capacidad de
+                  Mascotas
                 </div>
-                <div className="fs-5 fw-medium">{profile.capacity || 'No especificada'}</div>
+                <div className="fs-5 fw-medium">
+                  {profile.capacity || 'No especificada'}
+                </div>
               </div>
             </div>
             <div className="col-12 col-md-6">
@@ -120,7 +136,12 @@ const ProfileView = ({ profile, onEdit }) => {
                 </div>
                 <div className="fs-5 fw-medium">
                   {profile.website ? (
-                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-success text-decoration-none">
+                    <a
+                      href={profile.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-success text-decoration-none"
+                    >
                       {profile.website}
                     </a>
                   ) : (
@@ -132,11 +153,17 @@ const ProfileView = ({ profile, onEdit }) => {
             <div className="col-12 col-md-6">
               <div className="info-card">
                 <div className="text-muted small fw-bold text-uppercase mb-1">
-                  <MdAttachMoney className="me-2 text-success" /> Enlace de Donaciones
+                  <MdAttachMoney className="me-2 text-success" /> Enlace de
+                  Donaciones
                 </div>
                 <div className="fs-5 fw-medium">
                   {profile.donationLink ? (
-                    <a href={profile.donationLink} target="_blank" rel="noopener noreferrer" className="text-success text-decoration-none">
+                    <a
+                      href={profile.donationLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-success text-decoration-none"
+                    >
                       Donar aquí
                     </a>
                   ) : (
@@ -148,10 +175,15 @@ const ProfileView = ({ profile, onEdit }) => {
             <div className="col-12">
               <div className="info-card">
                 <div className="text-muted small fw-bold text-uppercase mb-1">
-                  <MdDescription className="me-2 text-success" /> Nuestra Historia / Descripción
+                  <MdDescription className="me-2 text-success" /> Nuestra
+                  Historia / Descripción
                 </div>
-                <div className="fs-6 lh-base text-secondary" style={{ whiteSpace: 'pre-line' }}>
-                  {profile.description || 'Este albergue aún no ha añadido una descripción.'}
+                <div
+                  className="fs-6 lh-base text-secondary"
+                  style={{ whiteSpace: 'pre-line' }}
+                >
+                  {profile.description ||
+                    'Este albergue aún no ha añadido una descripción.'}
                 </div>
               </div>
             </div>
@@ -203,13 +235,18 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
   const [form, setForm] = useState({ ...profile });
   const fileInputRef = useRef(null);
   const isHostel = profile.role?.toUpperCase() === 'HOSTEL';
+  const { uploadFile, isUploading } = useUploadFile();
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setForm({ ...form, avatar: reader.result });
-    reader.readAsDataURL(file);
+    try {
+      const uploadRes = await uploadFile(file);
+      const relativePath = `/api/files/${uploadRes.fileName}`;
+      setForm({ ...form, avatar: relativePath });
+    } catch (err) {
+      console.error('Error al subir imagen:', err);
+    }
   };
 
   return (
@@ -217,7 +254,7 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
       <div className="profile-card d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
         <div className="avatar-container">
           <img
-            src={form.avatar || DEFAULT_AVATAR}
+            src={form.avatar ? getPetImageUrl(form.avatar) : DEFAULT_AVATAR}
             alt="Avatar"
             className="avatar-img"
           />
@@ -232,8 +269,11 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
           <button
             className="camera-btn"
             onClick={() => fileInputRef.current.click()}
-            disabled={isPending}
-            style={{ opacity: isPending ? 0.6 : 1, cursor: isPending ? 'not-allowed' : 'pointer' }}
+            disabled={isPending || isUploading}
+            style={{
+              opacity: isPending ? 0.6 : 1,
+              cursor: isPending ? 'not-allowed' : 'pointer',
+            }}
           >
             <MdPhotoCamera size={22} />
           </button>
@@ -241,10 +281,18 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
         <div className="text-center text-md-start">
           <h1 className="fw-bold mb-3">Editando Perfil</h1>
           <div className="d-flex gap-2">
-            <Button className="btn-yellow" onClick={() => onSave(form)} isPending={isPending}>
+            <Button
+              className="btn-yellow"
+              onClick={() => onSave(form)}
+              isPending={isPending}
+            >
               Guardar
             </Button>
-            <button className="btn btn-cancel" onClick={onCancel} disabled={isPending}>
+            <button
+              className="btn btn-cancel"
+              onClick={onCancel}
+              disabled={isPending}
+            >
               Cancelar
             </button>
           </div>
@@ -264,20 +312,25 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
                   type="text"
                   className="form-control"
                   value={form.hostelName || ''}
-                  onChange={(e) => setForm({ ...form, hostelName: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, hostelName: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-12 col-md-6">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdPerson className="me-2 text-success" /> Nombre del Representante
+                  <MdPerson className="me-2 text-success" /> Nombre del
+                  Representante
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   value={form.fullName || ''}
-                  onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, fullName: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -297,26 +350,32 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
             <div className="col-12 col-md-6">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdLocationOn className="me-2 text-success" /> Dirección Física
+                  <MdLocationOn className="me-2 text-success" /> Dirección
+                  Física
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   value={form.address || ''}
-                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-12 col-md-6">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdPeople className="me-2 text-success" /> Capacidad Máxima de Mascotas
+                  <MdPeople className="me-2 text-success" /> Capacidad Máxima de
+                  Mascotas
                 </label>
                 <input
                   type="number"
                   className="form-control"
                   value={form.capacity || ''}
-                  onChange={(e) => setForm({ ...form, capacity: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, capacity: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -329,33 +388,41 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
                   type="url"
                   className="form-control"
                   value={form.website || ''}
-                  onChange={(e) => setForm({ ...form, website: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, website: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-12 col-md-6">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdAttachMoney className="me-2 text-success" /> Enlace de Donaciones (Paypal/Otros)
+                  <MdAttachMoney className="me-2 text-success" /> Enlace de
+                  Donaciones (Paypal/Otros)
                 </label>
                 <input
                   type="url"
                   className="form-control"
                   value={form.donationLink || ''}
-                  onChange={(e) => setForm({ ...form, donationLink: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, donationLink: e.target.value })
+                  }
                 />
               </div>
             </div>
             <div className="col-12">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdDescription className="me-2 text-success" /> Nuestra Historia / Descripción
+                  <MdDescription className="me-2 text-success" /> Nuestra
+                  Historia / Descripción
                 </label>
                 <textarea
                   className="form-control"
                   rows={4}
                   value={form.description || ''}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   placeholder="Cuéntanos un poco sobre el albergue, su visión o historia..."
                 />
               </div>
@@ -373,7 +440,9 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
                   type="text"
                   className="form-control"
                   value={form.fullName || ''}
-                  onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, fullName: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -393,13 +462,16 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
             <div className="col-12">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
-                  <MdLocationOn className="me-2 text-success" /> Dirección de Domicilio
+                  <MdLocationOn className="me-2 text-success" /> Dirección de
+                  Domicilio
                 </label>
                 <input
                   type="text"
                   className="form-control"
                   value={form.address || ''}
-                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -467,7 +539,10 @@ const Profile = () => {
       },
       onError: (err) => {
         console.error('Error al actualizar el perfil en el servidor:', err);
-        const msg = err?.response?.data?.message || err?.message || 'Error al guardar los cambios en el servidor.';
+        const msg =
+          err?.response?.data?.message ||
+          err?.message ||
+          'Error al guardar los cambios en el servidor.';
         showToast(msg, 'error');
       },
     });

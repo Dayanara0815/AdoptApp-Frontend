@@ -52,6 +52,7 @@ export const authService = {
     if (fullName) payload.fullName = fullName;
     if (updatedData.phone !== undefined) payload.phone = updatedData.phone;
     if (updatedData.address !== undefined) payload.address = updatedData.address;
+    if (updatedData.avatar !== undefined) payload.avatar = updatedData.avatar;
 
     // Si viene la sección de hostel, la mapeamos estructurada
     if (updatedData.hostel) {

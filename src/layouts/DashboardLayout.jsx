@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import { useAuth } from '../context/authStore';
 import aiAvatar from '../assets/ai-avatar.png';
+import { getPetImageUrl } from '../lib';
 
 const DashboardLayout = () => {
   const { user, logout } = useAuth();
@@ -125,12 +126,16 @@ const DashboardLayout = () => {
               </Link>
             );
           })}
+          <Link to="/" className="dashboard-link mt-2" style={{ opacity: 0.7 }}>
+            <span className="material-symbols-outlined">arrow_back</span>
+            <span>Volver al inicio</span>
+          </Link>
         </Nav>
 
         <div className="mt-auto pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <div className="dashboard-sidebar-profile-card">
             <img
-              src={user?.avatar || user?.hostel?.logo || aiAvatar}
+              src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
               alt="Avatar de usuario"
               className="dashboard-sidebar-avatar"
             />

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import aiAvatar from '../../assets/ai-avatar.png';
+import { getPetImageUrl } from '../../lib';
 
 export default function Drawer({
   isOpen,
@@ -89,7 +90,7 @@ export default function Drawer({
             <div className="d-flex flex-column gap-3 w-100">
               <div className="d-flex align-items-center gap-3 p-3 bg-light rounded-custom border">
                 <img
-                  src={user?.avatar || user?.hostel?.logo || aiAvatar}
+                  src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
                   alt="Avatar"
                   style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)' }}
                 />

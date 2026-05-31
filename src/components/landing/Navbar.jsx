@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authStore';
 import Drawer from './Drawer';
 import aiAvatar from '../../assets/ai-avatar.png';
+import { getPetImageUrl } from '../../lib';
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -59,7 +60,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="landing-header">
+    <header className="landing-header" style={{ position: 'relative', zIndex: 9999 }}>  
       <nav className="landing-navbar navbar navbar-expand-md">
         <div className="container px-4">
           <a
@@ -111,7 +112,7 @@ export default function Navbar() {
                     aria-label="Menú de usuario"
                   >
                     <img
-                      src={user?.avatar || user?.hostel?.logo || aiAvatar}
+                      src={user?.avatar ? getPetImageUrl(user.avatar) : user?.hostel?.logo ? getPetImageUrl(user.hostel.logo) : aiAvatar}
                       alt="Avatar de usuario"
                       className="nav-avatar-img"
                     />
