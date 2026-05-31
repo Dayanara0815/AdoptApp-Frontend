@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { usePetsPage } from '../../hooks/usePets';
+import { useQueryClient } from '@tanstack/react-query';
 import CatalogHeader from '../../components/Catalog/CatalogHeader';
 import CatalogSidebar from '../../components/Catalog/CatalogSidebar';
 import CatalogGrid from '../../components/Catalog/CatalogGrid';
+import { useWebSocket } from '../../hooks/useWebSocket';
 import './CatalogPage.css';
 
 const CatalogPage = () => {
+
+    const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
         species: [],
@@ -15,6 +19,23 @@ const CatalogPage = () => {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const petsPerPage = 6;
+
+    // 🔥 WEBSOCKETS - Escuchar eventos en tiempo real
+    useWebSocket('/topic/pets/created', (newPet) => {
+        console.log('🆕 Nueva mascota recibida!', newPet);
+        // Forzar recarga del catálogo
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
+    });
+
+    useWebSocket('/topic/pets/updated', (updatedPet) => {
+        console.log('✏️ Mascota actualizada!', updatedPet);
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
+    });
+
+    useWebSocket('/topic/pets/deleted', (deletedId) => {
+        console.log('🗑️ Mascota eliminada! ID:', deletedId);
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
+    });
 
     // Reset standard page to 1 when filters or search term change
     useEffect(() => {
