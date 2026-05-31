@@ -1,19 +1,16 @@
 export default function MissionVisionSection() {
   return (
-    <section className="section-padding container">
+    <section className="section-padding container" style={{ padding: '80px 0' }}>
       <div className="row g-4">
 
         {/* Misión */}
         <div className="col-md-6" id="mision">
-          <div className="card-mission">
-            <span
-              className="material-symbols-outlined mb-4"
-              style={{ fontSize: "3rem", color: "var(--primary)" }}
-            >
+          <div className="card-mission" style={{ padding: '60px' }}>
+            <span className="material-symbols-outlined mb-2" style={{ fontSize: "2rem", color: "var(--primary)" }}>
               track_changes
             </span>
-            <h3 className="mb-4">Nuestra Misión</h3>
-            <p className="lead mb-5" style={{ color: "#5a6159" }}>
+            <h3 className="mb-3">Nuestra Misión</h3>
+            <p className="lead mb-3" style={{ color: "#5a6159", fontSize: '1.15rem'  }}>
               Facilitar encuentros genuinos entre animales en situación de vulnerabilidad y hogares
               responsables, utilizando tecnología de punta para garantizar que cada adopción sea un
               éxito duradero y amoroso.
@@ -27,15 +24,15 @@ export default function MissionVisionSection() {
 
         {/* Visión */}
         <div className="col-md-6" id="vision">
-          <div className="card-vision">
+          <div className="card-vision" style={{ padding: '60px' }}>
             <span
-              className="material-symbols-outlined mb-4"
-              style={{ fontSize: "3rem", color: "var(--secondary)" }}
+              className="material-symbols-outlined mb-2"
+              style={{ fontSize: "2rem", color: "var(--secondary)" }}
             >
               visibility
             </span>
-            <h3 className="mb-4">Nuestra Visión</h3>
-            <p className="lead mb-5" style={{ color: "#5a6159" }}>
+            <h3 className="mb-3">Nuestra Visión</h3>
+            <p className="lead mb-3" style={{ color: "#5a6159", fontSize: '1.15rem'  }}>
               Ser la plataforma líder a nivel global en la curaduría del bienestar animal,
               transformando la percepción de la adopción y logrando que ningún animal sano pase su
               vida en un refugio.

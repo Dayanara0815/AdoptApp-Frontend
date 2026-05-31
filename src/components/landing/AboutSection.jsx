@@ -30,7 +30,7 @@ export default function AboutSection() {
     <section
       className="section-padding"
       id="quienes-somos"
-      style={{ backgroundColor: '#F5F5DC' }}
+      style={{ backgroundColor: '#F5F5DC', padding: '60px 0' }}
     >
       <div className="container">
         <div className="row align-items-center g-5">
@@ -39,7 +39,7 @@ export default function AboutSection() {
             <h2 className="display-5 mb-4">
               Donde las almas nobles encuentran su hogar
             </h2>
-            <div className="lead" style={{ color: '#5a6159' }}>
+            <div className="lead" style={{ color: '#5a6159', fontSize: '1.15rem'  }}>
               <p className="mb-4">
                 AdoptApp no es solo un catálogo de búsqueda; es el comienzo de
                 una nueva historia. Nacimos para devolverle la humanidad al acto
