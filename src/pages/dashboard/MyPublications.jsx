@@ -182,7 +182,7 @@ const MyPublications = () => {
               ) : (
                 pets.map((pet) => {
                   const petId = pet.id || pet._id;
-                  const isAdopted = pet.isAdopted || pet.status === 'Adoptado';
+                  const isAdopted = pet.isAdopted || pet.status === 'ADOPTED' || pet.status === 'Adoptado';
                   return (
                     <tr key={petId} className="align-middle">
                       <td className="p-4">
