@@ -749,3 +749,70 @@
   }
 }
 
+/* ── Admin User Management Styling ── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-animation {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+.transition-row {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.transition-row:hover {
+  background-color: rgba(95, 126, 109, 0.04) !important;
+}
+
+/* Custom Premium Pagination Styling */
+.custom-pagination {
+  margin: 0;
+  display: flex;
+  gap: 4px;
+}
+.custom-pagination .page-item .page-link {
+  color: var(--color-primary-700);
+  background-color: white;
+  border-color: rgba(95, 126, 109, 0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+.custom-pagination .page-item:hover .page-link {
+  background-color: rgba(95, 126, 109, 0.08);
+  border-color: var(--color-primary-700);
+  color: var(--color-primary-700);
+}
+.custom-pagination .page-item.active .page-link {
+  background-color: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: white;
+  box-shadow: 0 4px 10px rgba(95, 126, 109, 0.2);
+}
+.custom-pagination .page-item.disabled .page-link {
+  color: #adb5bd;
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  opacity: 0.6;
+}
+
+/* Modal customizations */
+.user-detail-modal .modal-content {
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: var(--shadow-lg);
+  background-color: var(--color-neutral-100);
+}
+.user-detail-modal .modal-header {
+  background-color: transparent;
+}
+.user-detail-modal .modal-footer {
+  background-color: transparent;
+}
+
