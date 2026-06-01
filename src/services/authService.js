@@ -70,4 +70,20 @@ export const authService = {
 
     return await api.put(`/users/${id}`, payload);
   },
+
+  getUsersPage: async (page = 0, size = 10) => {
+    return await api.get('/users', { params: { page, size } });
+  },
+
+  getUsersByRole: async (role, page = 0, size = 10) => {
+    return await api.get(`/users/role/${role}`, { params: { page, size } });
+  },
+
+  activateUser: async (id) => {
+    return await api.put(`/users/${id}/activate`);
+  },
+
+  deactivateUser: async (id) => {
+    return await api.put(`/users/${id}/deactivate`);
+  },
 };

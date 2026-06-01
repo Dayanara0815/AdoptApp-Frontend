@@ -12,7 +12,7 @@ const AdminAdoptions = () => {
       <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <div>
           <h2 className="fw-bold text-success mb-0">Registro de Adopciones</h2>
-          <p className="text-secondary mb-0">
+          <p className="text-muted mb-0">
             Mascotas que ya encontraron un hogar
           </p>
         </div>
@@ -25,12 +25,12 @@ const AdminAdoptions = () => {
         <Card className="border-0 shadow-sm rounded-xl p-5 text-center">
           <Card.Body>
             <span
-              className="material-symbols-outlined text-secondary mb-3"
+              className="material-symbols-outlined text-muted mb-3"
               style={{ fontSize: '48px' }}
             >
               sentiment_dissatisfied
             </span>
-            <h4 className="text-secondary">
+            <h4 className="text-muted">
               Aún no hay adopciones registradas
             </h4>
             <p className="text-muted">
