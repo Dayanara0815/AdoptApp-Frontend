@@ -52,7 +52,9 @@ export function getPetImageUrl(image: string | null | undefined): string {
     return image;
   }
   if (image.startsWith('/api/files/') || image.startsWith('api/files/')) {
-    const fileServiceUrl = (import.meta as any).env.VITE_FILE_SERVICE_URL || 'http://localhost:7071';
+    const fileServiceUrl = (import.meta as any).env.VITE_FILE_SERVICE_URL !== undefined && (import.meta as any).env.VITE_FILE_SERVICE_URL !== ''
+      ? (import.meta as any).env.VITE_FILE_SERVICE_URL
+      : (import.meta.env.DEV ? 'http://localhost:7071' : '');
     const normalizedPath = image.startsWith('/') ? image : `/${image}`;
     return `${fileServiceUrl}${normalizedPath}`;
   }

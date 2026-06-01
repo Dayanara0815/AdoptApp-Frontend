@@ -8,9 +8,11 @@ services:
         VITE_FILE_SERVICE_URL: ${VITE_FILE_SERVICE_URL}
         VITE_WS_URL: ${VITE_WS_URL}
 
-    # Descomenta las siguientes líneas para exponer la app en el puerto 3000 localmente
-    # ports:
-    #   - "3000:80"
+    ports:
+      - "3000:80"
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     networks:
       - ms-net
