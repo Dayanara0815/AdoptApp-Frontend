@@ -7,7 +7,7 @@ export const useWebSocket = (topic, onMessage) => {
 
   useEffect(() => {
     const client = new Client({
-      brokerURL: 'ws://localhost:8082/ws',  // ← WebSocket nativo (sin SockJS)
+      brokerURL: import.meta.env.VITE_WS_URL || 'ws://localhost:8082/ws',  // ← WebSocket nativo (sin SockJS)
       reconnectDelay: 5000,
       onConnect: () => {
         console.log(`✅ Conectado a WebSocket, suscrito a: ${topic}`);

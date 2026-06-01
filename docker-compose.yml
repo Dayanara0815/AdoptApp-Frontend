@@ -6,6 +6,7 @@ services:
       args:
         VITE_BACKEND_URL: ${VITE_BACKEND_URL}
         VITE_FILE_SERVICE_URL: ${VITE_FILE_SERVICE_URL}
+        VITE_WS_URL: ${VITE_WS_URL}
 
     # Descomenta las siguientes líneas para exponer la app en el puerto 3000 localmente
     # ports:

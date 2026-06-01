@@ -2,11 +2,14 @@
 FROM node:18-alpine AS build
 WORKDIR /app
 
+# Instalar pnpm
+RUN npm install -g pnpm
+
 # Copiar archivos de definición de dependencias
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Instalar dependencias
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copiar el código fuente
 COPY . .
@@ -14,13 +17,15 @@ COPY . .
 # Declarar variables de entorno de Vite requeridas durante la compilación
 ARG VITE_BACKEND_URL
 ARG VITE_FILE_SERVICE_URL
+ARG VITE_WS_URL
 
 # Exponerlas al proceso de compilación de Vite
 ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 ENV VITE_FILE_SERVICE_URL=$VITE_FILE_SERVICE_URL
+ENV VITE_WS_URL=$VITE_WS_URL
 
 # Compilar la aplicación React + Vite
-RUN npm run build
+RUN pnpm build
 
 # Stage 2: Serve
 FROM nginx:1.25-alpine
