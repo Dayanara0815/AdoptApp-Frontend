@@ -62,8 +62,12 @@ const CatalogPage = () => {
         trait: pet.size === 'SMALL' ? 'Tamaño Pequeño' : pet.size === 'MEDIUM' ? 'Tamaño Mediano' : 'Tamaño Grande',
         contactPhone: pet.contactPhone || '',
         isNewArrival: false,
-        isSpecialNeed: false
+        isSpecialNeed: false,
+        publisherName: pet.publisherName || 'Usuario',
+        publisherRole: pet.publisherRole || 'USER'        
     }));
+    console.log('📦 Datos de mascotas:', mappedPets);
+    console.log('🔍 Primera mascota:', mappedPets[0]);
 
     return (
         <div className="catalog-theme">
