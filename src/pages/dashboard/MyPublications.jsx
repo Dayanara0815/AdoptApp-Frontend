@@ -5,18 +5,28 @@ import {
   Modal,
   Card,
   Alert,
+  Form,
+  Row,
+  Col,
+  Spinner,
 } from 'react-bootstrap';
 import {
   FaEdit,
   FaTrash,
   FaCheckCircle,
   FaPaw,
+  FaSearch,
+  FaUserCheck,
 } from 'react-icons/fa';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../context/authStore';
 import { usePets, useUserPets } from '../../hooks/usePets';
 import PetFormModal from '../../components/dashboard/PetFormModal';
 import { getPetImageUrl } from '../../lib';
+import { useToast } from '../../context/ToastContext';
+import { authService } from '../../services/authService';
+import { adoptionService } from '../../services/adoptionService';
 
 const MyPublications = () => {
   const { user } = useAuth();
@@ -29,8 +39,18 @@ const MyPublications = () => {
     deletePet,
   } = usePets();
 
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
+
   const [showFormModal, setShowFormModal] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
+
+  // States for search and registering the adopter
+  const [adopterEmail, setAdopterEmail] = useState('');
+  const [foundAdopter, setFoundAdopter] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const [isExternal, setIsExternal] = useState(false);
 
   // Estado para modales de confirmación (Adoptado / Eliminar)
   const [confirmModal, setConfirmModal] = useState({
@@ -53,10 +73,39 @@ const MyPublications = () => {
   // --- MANEJADORES DE ACCIONES RÁPIDAS ---
   const openConfirm = (type, pet) => {
     setConfirmModal({ show: true, type, pet });
+    setAdopterEmail('');
+    setFoundAdopter(null);
+    setSearchError('');
+    setIsExternal(false);
   };
 
   const closeConfirm = () => {
     setConfirmModal({ show: false, type: '', pet: null });
+  };
+
+  const handleSearchAdopter = async () => {
+    const trimmedEmail = adopterEmail.trim().toLowerCase();
+    if (!trimmedEmail) {
+      setSearchError('Por favor ingresa un correo electrónico.');
+      return;
+    }
+    setSearchLoading(true);
+    setSearchError('');
+    setFoundAdopter(null);
+    try {
+      const response = await authService.getUserByEmail(trimmedEmail);
+      const userData = response?.data || response;
+      if (userData && userData.id) {
+        setFoundAdopter(userData);
+      } else {
+        setSearchError('Usuario no encontrado con ese correo.');
+      }
+    } catch (err) {
+      console.error('Error al buscar adoptante:', err);
+      setSearchError(err?.message || 'Usuario no encontrado en el sistema.');
+    } finally {
+      setSearchLoading(false);
+    }
   };
 
   const executeConfirmAction = async () => {
@@ -64,30 +113,20 @@ const MyPublications = () => {
     const petId = pet?.id || pet?._id;
     try {
       if (type === 'adopt') {
-        let mappedSpecies = 'OTHER';
-        if (pet.species === 'dogs' || pet.species === 'DOG') mappedSpecies = 'DOG';
-        else if (pet.species === 'cats' || pet.species === 'CAT') mappedSpecies = 'CAT';
-
-        let mappedSize = 'SMALL';
-        if (pet.size === 'Pequeño' || pet.size === 'SMALL') mappedSize = 'SMALL';
-        else if (pet.size === 'Mediano' || pet.size === 'MEDIUM') mappedSize = 'MEDIUM';
-        else if (pet.size === 'Grande' || pet.size === 'LARGE') mappedSize = 'LARGE';
-
-        await updatePet({
-          id: petId,
-          data: {
-            ...pet,
-            species: mappedSpecies,
-            size: mappedSize,
-            isAdopted: true,
-            status: 'ADOPTED',
-          },
-        });
+        const adopterId = isExternal ? null : (foundAdopter ? foundAdopter.id : null);
+        
+        // Register the adoption using the new adoptionService API
+        await adoptionService.registerAdoption(petId, adopterId);
+        showToast(`🎉 ¡Felicitaciones! Se registró la adopción de ${pet?.name} con éxito.`, 'success');
+        
+        // Invalidate pets queries in the React Query cache so the publications list refreshes
+        queryClient.invalidateQueries({ queryKey: ['pets'] });
       } else if (type === 'delete') {
         await deletePet(petId);
       }
     } catch (err) {
       console.error(`Error al ejecutar acción ${type}:`, err);
+      showToast(err?.message || `Error al ejecutar acción ${type}`, 'error');
     }
     closeConfirm();
   };
@@ -272,39 +311,156 @@ const MyPublications = () => {
       />
 
       {/* MODAL: CONFIRMACIÓN (ADOPTADO / ELIMINAR) */}
-      <Modal show={confirmModal.show} onHide={closeConfirm} centered border="0">
-        <Modal.Body className="text-center p-5">
-          <div
-            className={`display-1 mb-4 ${confirmModal.type === 'adopt' ? 'text-success' : 'text-danger'}`}
-          >
-            {confirmModal.type === 'adopt' ? <FaCheckCircle /> : <FaTrash />}
-          </div>
-          <h3 className="fw-bold mb-3">
-            {confirmModal.type === 'adopt'
-              ? '¡Grandes noticias!'
-              : '¿Estás seguro?'}
-          </h3>
-          <p className="text-muted mb-4 px-3">
-            {confirmModal.type === 'adopt'
-              ? `¿Confirmas que ${confirmModal.pet?.name} ya encontró un hogar definitivo?`
-              : `¿Estás seguro de eliminar la publicación de ${confirmModal.pet?.name} de forma permanente? Esta acción no se puede deshacer.`}
-          </p>
-          <div className="d-flex gap-3 justify-content-center">
-            <Button
-              variant="light"
-              onClick={closeConfirm}
-              className="rounded-pill px-4 fw-bold"
-            >
-              No, volver
-            </Button>
-            <Button
-              variant={confirmModal.type === 'adopt' ? 'success' : 'danger'}
-              onClick={executeConfirmAction}
-              className="rounded-pill px-4 fw-bold shadow-sm"
-            >
-              Sí, confirmar
-            </Button>
-          </div>
+      <Modal show={confirmModal.show} onHide={closeConfirm} centered border="0" size={confirmModal.type === 'adopt' ? 'lg' : undefined}>
+        <Modal.Body className={confirmModal.type === 'adopt' ? "p-5" : "text-center p-5"}>
+          {confirmModal.type === 'adopt' ? (
+            <div>
+              <div className="text-center mb-4">
+                <div className="display-1 text-success mb-2">
+                  <FaCheckCircle />
+                </div>
+                <h3 className="fw-bold" style={{ color: 'var(--color-primary-700)' }}>¡Registrar Adopción!</h3>
+                <p className="text-muted">
+                  Completa los datos para registrar la adopción de <strong>{confirmModal.pet?.name}</strong>.
+                </p>
+              </div>
+
+              <Form.Group className="mb-4">
+                <Form.Label className="fw-bold text-muted small mb-2">TIPO DE ADOPTANTE</Form.Label>
+                <div className="d-flex gap-4">
+                  <Form.Check
+                    type="radio"
+                    id="radio-registered"
+                    label="Adoptante registrado en AdoptApp"
+                    name="adopterType"
+                    checked={!isExternal}
+                    onChange={() => {
+                      setIsExternal(false);
+                      setSearchError('');
+                    }}
+                    className="fw-semibold text-dark"
+                  />
+                  <Form.Check
+                    type="radio"
+                    id="radio-external"
+                    label="Adoptante externo (sin cuenta)"
+                    name="adopterType"
+                    checked={isExternal}
+                    onChange={() => {
+                      setIsExternal(true);
+                      setFoundAdopter(null);
+                      setAdopterEmail('');
+                      setSearchError('');
+                    }}
+                    className="fw-semibold text-dark"
+                  />
+                </div>
+              </Form.Group>
+
+              {!isExternal ? (
+                <div className="bg-light rounded-custom p-4 mb-4" style={{ backgroundColor: '#fcfcf8', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '15px' }}>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="fw-semibold text-muted small">Buscar por correo electrónico:</Form.Label>
+                    <Row className="g-2">
+                      <Col>
+                        <Form.Control
+                          type="email"
+                          placeholder="correo@ejemplo.com"
+                          value={adopterEmail}
+                          onChange={(e) => setAdopterEmail(e.target.value)}
+                          className="border-custom bg-white"
+                          style={{ borderRadius: '50px' }}
+                        />
+                      </Col>
+                      <Col xs="auto">
+                        <Button
+                          variant="primary"
+                          onClick={handleSearchAdopter}
+                          disabled={searchLoading || !adopterEmail.trim()}
+                          className="rounded-pill px-4 d-flex align-items-center gap-2"
+                        >
+                          {searchLoading ? (
+                            <Spinner animation="border" size="sm" />
+                          ) : (
+                            <FaSearch />
+                          )}
+                          Buscar
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Form.Group>
+
+                  {searchError && (
+                    <Alert variant="danger" className="py-2 px-3 small border-0 mb-0 mt-2" style={{ borderRadius: '10px' }}>
+                      <span className="material-symbols-outlined align-middle me-2 fs-6">error</span>
+                      {searchError}
+                    </Alert>
+                  )}
+
+                  {foundAdopter && (
+                    <Alert variant="success" className="d-flex align-items-center gap-3 mb-0 mt-3 border-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(46, 204, 113, 0.1)' }}>
+                      <FaUserCheck className="text-success fs-3" />
+                      <div>
+                        <div className="fw-bold text-dark">{foundAdopter.fullName}</div>
+                        <div className="small text-muted">{foundAdopter.email} {foundAdopter.dni ? `• DNI: ${foundAdopter.dni}` : ''}</div>
+                      </div>
+                    </Alert>
+                  )}
+                </div>
+              ) : (
+                <Alert variant="warning" className="d-flex align-items-center gap-3 mb-4 border-0" style={{ borderRadius: '12px', backgroundColor: 'rgba(241, 196, 15, 0.1)', color: '#a07800' }}>
+                  <span className="material-symbols-outlined fs-2">info</span>
+                  <div className="small">
+                    Se creará un registro de adopción externo. La mascota se marcará como **Adoptada**, pero no estará vinculada a ningún usuario registrado del sistema.
+                  </div>
+                </Alert>
+              )}
+
+              <div className="d-flex gap-3 justify-content-end mt-4">
+                <Button
+                  variant="light"
+                  onClick={closeConfirm}
+                  className="rounded-pill px-4 fw-bold"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={executeConfirmAction}
+                  disabled={!isExternal && !foundAdopter}
+                  className="rounded-pill px-4 fw-bold shadow-sm"
+                >
+                  Confirmar Adopción
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="display-1 mb-4 text-danger">
+                <FaTrash />
+              </div>
+              <h3 className="fw-bold mb-3">¿Estás seguro?</h3>
+              <p className="text-muted mb-4 px-3">
+                ¿Estás seguro de eliminar la publicación de {confirmModal.pet?.name} de forma permanente? Esta acción no se puede deshacer.
+              </p>
+              <div className="d-flex gap-3 justify-content-center">
+                <Button
+                  variant="light"
+                  onClick={closeConfirm}
+                  className="rounded-pill px-4 fw-bold"
+                >
+                  No, volver
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={executeConfirmAction}
+                  className="rounded-pill px-4 fw-bold shadow-sm"
+                >
+                  Sí, confirmar
+                </Button>
+              </div>
+            </div>
+          )}
         </Modal.Body>
       </Modal>
     </div>

@@ -86,4 +86,8 @@ export const authService = {
   deactivateUser: async (id) => {
     return await api.put(`/users/${id}/deactivate`);
   },
+
+  getUserByEmail: async (email) => {
+    return await api.get(`/users/email/${email}`);
+  },
 };
