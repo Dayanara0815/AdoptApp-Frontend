@@ -15,14 +15,14 @@ const CatalogHeader = ({ searchQuery, setSearchQuery }) => {
                 >
                   search
                 </span>
-                <input
+              <input
                   type="text"
                   className="form-control bg-surface-container-lowest border-0 rounded-pill py-3 ps-5 shadow-sm focus-ring text-on-surface w-100"
                   style={{ fontSize: '0.95rem' }}
-                  placeholder="Buscar por nombre, especie o raza..."
+                  placeholder="Buscar por nombre de mascota, descripción o publicador..."  // ✅ CAMBIAR ESTO
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                />
+              />
               </div>
               <button
                 className="btn btn-primary rounded-pill px-4 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2"
