@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import { mockPets } from '../../data/mockPets';
+import React, { useState, useEffect } from 'react';
+import { usePetsPage } from '../../hooks/usePets';
+import { useQueryClient } from '@tanstack/react-query';
 import CatalogHeader from '../../components/Catalog/CatalogHeader';
 import CatalogSidebar from '../../components/Catalog/CatalogSidebar';
 import CatalogGrid from '../../components/Catalog/CatalogGrid';
+import { useWebSocket } from '../../hooks/useWebSocket';
 import './CatalogPage.css';
 
 const CatalogPage = () => {
-    const { data: petsData } = useLocalStorage('catalogPets_v6', mockPets);
+
+    const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [filters, setFilters] = useState({
         species: [],
@@ -15,43 +17,57 @@ const CatalogPage = () => {
         age: '',
         size: 'Todos los Tamaños'
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const petsPerPage = 6;
 
-    // Filtramos las mascotas basándonos en la búsqueda y los filtros
-    const filteredPets = petsData.filter(pet => {
-        // 1. Filtro de Búsqueda (Search Query)
-        if (searchQuery) {
-            const searchLower = searchQuery.toLowerCase();
-            const matchesSearch = pet.name.toLowerCase().includes(searchLower) ||
-                                  pet.breed.toLowerCase().includes(searchLower) ||
-                                  pet.species.toLowerCase().includes(searchLower);
-            if (!matchesSearch) return false;
-        }
-
-        // 2. Filtro de Especie
-        if (filters.species.length > 0) {
-            // Asumimos que 'dogs' -> 'Perro', 'cats' -> 'Gato', etc.
-            // Para simplificar, mapeamos species seleccionados.
-            // mockPets tiene 'species' como 'dogs', 'cats', etc.
-            if (!filters.species.includes(pet.species)) return false;
-        }
-
-        // 3. Filtro de Sexo
-        if (filters.sex.length > 0) {
-            if (!filters.sex.includes(pet.sexo)) return false;
-        }
-
-        // 4. Filtro de Edad
-        if (filters.age) {
-            if (pet.ageCategory !== filters.age) return false;
-        }
-
-        // 5. Filtro de Tamaño
-        if (filters.size !== 'Todos los Tamaños') {
-            if (pet.size !== filters.size) return false;
-        }
-
-        return true;
+    // 🔥 WEBSOCKETS - Escuchar eventos en tiempo real
+    useWebSocket('/topic/pets/created', (newPet) => {
+        console.log('🆕 Nueva mascota recibida!', newPet);
+        // Forzar recarga del catálogo
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
     });
+
+    useWebSocket('/topic/pets/updated', (updatedPet) => {
+        console.log('✏️ Mascota actualizada!', updatedPet);
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
+    });
+
+    useWebSocket('/topic/pets/deleted', (deletedId) => {
+        console.log('🗑️ Mascota eliminada! ID:', deletedId);
+        queryClient.invalidateQueries({ queryKey: ['pets', 'page'], exact: false });
+    });
+
+    // Reset standard page to 1 when filters or search term change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, searchQuery]);
+
+    // Retrieve paginated and filtered pets from backend
+    const { data: pageResponse, isLoading, isError, error } = usePetsPage(
+        currentPage - 1, // backend is 0-indexed
+        petsPerPage,
+        'AVAILABLE',
+        filters,
+        searchQuery
+    );
+
+    const petsData = pageResponse?.content || [];
+    const totalPages = pageResponse?.totalPages || 1;
+
+    // Map database properties to the UI card formats
+    const mappedPets = petsData.map(pet => ({
+        ...pet,
+        // Map backend enums to Spanish text for the UI badges
+        breed: pet.species === 'DOG' ? 'Perro' : pet.species === 'CAT' ? 'Gato' : pet.species === 'RABBIT' ? 'Conejo' : 'Otro',
+        trait: pet.size === 'SMALL' ? 'Tamaño Pequeño' : pet.size === 'MEDIUM' ? 'Tamaño Mediano' : 'Tamaño Grande',
+        contactPhone: pet.contactPhone || '',
+        isNewArrival: false,
+        isSpecialNeed: false,
+        publisherName: pet.publisherName || 'Usuario',
+        publisherRole: pet.publisherRole || 'USER'        
+    }));
+    console.log('📦 Datos de mascotas:', mappedPets);
+    console.log('🔍 Primera mascota:', mappedPets[0]);
 
     return (
         <div className="catalog-theme">
@@ -68,7 +84,24 @@ const CatalogPage = () => {
 
                     {/* Main Grid */}
                     <div className="col-12 col-lg-9">
-                        <CatalogGrid petsData={filteredPets} />
+                        {isLoading ? (
+                            <div className="d-flex justify-content-center py-5">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        ) : isError ? (
+                            <div className="alert alert-danger" role="alert">
+                                Error al cargar el catálogo: {error?.message || 'Error de conexión'}
+                            </div>
+                        ) : (
+                            <CatalogGrid 
+                                petsData={mappedPets} 
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                            />
+                        )}
                     </div>
                 </div>
             </main>

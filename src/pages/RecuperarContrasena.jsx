@@ -58,7 +58,7 @@ export default function RecuperarContrasena() {
 
 const styles = {
   wrapper: {
-    paddingTop: '90px',
+    paddingTop: '40px',
     paddingBottom: '60px',
     background: '#F7F7F2',
     boxSizing: 'border-box',

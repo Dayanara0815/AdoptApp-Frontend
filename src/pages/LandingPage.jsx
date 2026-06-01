@@ -23,7 +23,7 @@ export default function LandingPage() {
 
   return (
     <div className="landing-root">
-      <main className="pt-5 mt-3">
+      <main>
         <HeroSection />
         <AboutSection />
         <MissionVisionSection />

@@ -21,10 +21,10 @@ const objectives = [
 
 export default function ObjectivesSection() {
   return (
-    <section className="section-padding bg-white" id="objetivos">
+    <section className="section-padding bg-white" id="objetivos" style={{ padding: '80px 0' }}>
       <div className="container">
-        <div className="text-center mb-5 pb-3">
-          <h2 className="display-5 mb-3">Nuestros Objetivos Centrales</h2>
+        <div className="text-center mb-3 pb-3">
+          <h2 className="display-5 mb-3" style={{ fontSize: '2.7rem'}}>Nuestros Objetivos Centrales</h2>
         </div>
         <div className="row g-4">
           {objectives.map((obj) => (

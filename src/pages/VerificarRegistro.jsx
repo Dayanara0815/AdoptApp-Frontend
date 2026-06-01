@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authStore';
-import useLocalStorage from '../hooks/useLocalStorage';
+import { useAuthMutations } from '../hooks/useAuthMutations';
+import { useToast } from '../context/ToastContext';
 
 export default function VerificarRegistro() {
   const nav = useNavigate();
-  const { login } = useAuth();
-  const { createItem } = useLocalStorage('usuarios');
+  const { showToast } = useToast();
+  const { register, login, isRegistering, isLoggingIn } = useAuthMutations();
   const correo = localStorage.getItem('temp_correo') || 'usuario@correo.com';
 
   const [codigo, setCodigo] = useState('');
   const [segundos, setSegundos] = useState(60);
   const [error, setError] = useState('');
+
+  const loading = isRegistering || isLoggingIn;
 
   useEffect(() => {
     if (segundos <= 0) return;
@@ -19,42 +21,60 @@ export default function VerificarRegistro() {
     return () => clearTimeout(t);
   }, [segundos]);
 
-  const verificar = () => {
-    // Leemos el código que se generó en la página anterior
+  const verificar = async () => {
     const codigoCorrecto = localStorage.getItem('temp_code');
 
     if (codigo === codigoCorrecto) {
-      // 1. Recuperamos los datos del usuario que se está registrando
+      setError('');
+
       const rawTempUser = localStorage.getItem('temp_user');
       console.log('Verificación exitosa. Buscando temp_user:', rawTempUser);
-      if (rawTempUser) {
-        const tempUser = JSON.parse(rawTempUser);
-        console.log('Guardando usuario oficial:', tempUser);
-        // Guardamos oficialmente en la lista de usuarios
-        createItem(tempUser);
-        // Iniciamos sesión automáticamente
-        login(tempUser);
-        localStorage.removeItem('temp_user');
-      } else {
-        console.warn('No se encontró temp_user en localStorage');
-      }
 
-      // 2. Limpiamos los datos temporales del código
-      localStorage.removeItem('temp_correo');
-      localStorage.removeItem('temp_code');
-      nav('/registro-exitoso');
+      if (rawTempUser) {
+        try {
+          const tempUser = JSON.parse(rawTempUser);
+
+          // 1. Guardar oficialmente en el Backend de Negocio (PostgreSQL)
+          await register(tempUser);
+
+          // 2. Iniciar sesión automáticamente para obtener el token JWT de seguridad y guardarlo en contexto/localstorage
+          await login({
+            correo: tempUser.correo || tempUser.email,
+            contrasena: tempUser.contrasena || tempUser.password,
+          });
+
+          showToast('¡Cuenta registrada y verificada con éxito! 🎉🐾', 'success');
+
+          // Limpiar datos temporales
+          localStorage.removeItem('temp_user');
+          localStorage.removeItem('temp_correo');
+          localStorage.removeItem('temp_code');
+
+          nav('/registro-exitoso');
+        } catch (err) {
+          console.error('Error durante la persistencia en el servidor:', err);
+          const errMsg = err?.message || 'Error al guardar la cuenta en la base de datos principal. Inténtalo de nuevo.';
+          setError(errMsg);
+          showToast(errMsg, 'error');
+        }
+      } else {
+        const errMsg = 'No se encontraron los datos temporales del registro. Por favor, regístrate de nuevo.';
+        setError(errMsg);
+        showToast(errMsg, 'error');
+      }
     } else {
-      setError(
-        'Código incorrecto. Revisa el que salió en la ventana emergente.'
-      );
+      const errMsg = 'Código incorrecto. Revisa el que salió en la ventana emergente.';
+      setError(errMsg);
+      showToast(errMsg, 'error');
     }
   };
 
   const reenviar = () => {
-    // Generamos un nuevo código y lo mostramos de nuevo
+    // Generar nuevo código aleatorio
     const nuevoCodigo = Math.floor(100000 + Math.random() * 900000).toString();
     localStorage.setItem('temp_code', nuevoCodigo);
 
+    showToast('🐾 Nuevo código de verificación enviado con éxito', 'info');
     alert(`Tu nuevo código de verificación es: ${nuevoCodigo}`);
 
     setSegundos(60);
@@ -75,11 +95,21 @@ export default function VerificarRegistro() {
           style={styles.input}
           placeholder="0 0 0 0 0 0"
           maxLength={6}
+          disabled={loading}
           onChange={(e) => setCodigo(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && verificar()}
         />
 
-        <button style={styles.btn} onClick={verificar}>
-          Verificar código
+        <button style={styles.btn} onClick={verificar} disabled={loading}>
+          {loading ? (
+            <span
+              className="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              style={{ marginRight: '8px' }}
+            ></span>
+          ) : null}
+          {loading ? 'Verificando...' : 'Verificar código'}
         </button>
 
         {segundos > 0 ? (
@@ -99,14 +129,15 @@ const styles = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100vh',
-    background: '#F7F7F2',
+    minHeight: 'calc(100vh - 85px)',
+    background: 'linear-gradient(135deg, #F3F6F4 0%, #E7ECE8 100%)',
+    fontFamily: "'Inter', 'Roboto', sans-serif",
   },
   card: {
     background: 'white',
     padding: '2.5rem',
     borderRadius: '24px',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.05)',
+    boxShadow: '0 8px 32px rgba(95, 126, 109, 0.08)',
     width: '400px',
     textAlign: 'center',
   },
@@ -134,7 +165,7 @@ const styles = {
     padding: '12px 16px',
     marginBottom: '20px',
     borderRadius: '12px',
-    border: '1px solid #e0e0e0',
+    border: '1.5px solid #e0e0e0',
     fontSize: '1.8rem',
     textAlign: 'center',
     letterSpacing: '8px',
@@ -153,6 +184,7 @@ const styles = {
     fontWeight: '700',
     fontSize: '1rem',
     marginBottom: '1rem',
+    transition: 'all 0.2s ease',
   },
   timer: { color: '#aaa', fontSize: '0.9rem' },
   reenviar: {
@@ -162,11 +194,13 @@ const styles = {
     fontWeight: '600',
   },
   error: {
-    color: '#d32f2f',
-    fontSize: '0.85rem',
+    color: '#C0392B',
+    textAlign: 'center',
     marginBottom: '15px',
-    background: '#ffebee',
+    fontSize: '0.85rem',
+    background: '#FDEDEC',
     padding: '10px',
     borderRadius: '10px',
+    border: '1px solid #FADBD8',
   },
 };

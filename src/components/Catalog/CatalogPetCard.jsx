@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPetImageUrl } from '../../lib';
 
 const PetCard = ({
     name,
@@ -9,7 +10,9 @@ const PetCard = ({
     image,
     isNewArrival,
     isSpecialNeed,
-    contactPhone
+    contactPhone,
+    publisherName,
+    publisherRole
 }) => {
     const whatsappUrl = contactPhone 
         ? `https://wa.me/${contactPhone}?text=${encodeURIComponent(`Hola, estoy interesado en adoptar a ${name}. ¿Me podrías dar más información?`)}`
@@ -20,11 +23,12 @@ const PetCard = ({
             {/* Image Container */}
             <div className="position-relative overflow-hidden rounded-xl m-3" style={{ aspectRatio: '4/5' }}>
                 <img
-                    src={image}
+                    src={getPetImageUrl(image)}
                     alt={`${name}`}
                     className="w-100 h-100 object-fit-cover"
                     style={{ transition: 'transform 0.7s' }}
                 />
+
 
                 {/* Badges */}
                 {(isNewArrival || isSpecialNeed) && (
@@ -67,6 +71,16 @@ const PetCard = ({
                     <span className="badge bg-surface-container-high text-on-surface-variant rounded-pill px-3 py-2 fw-bold" style={{ fontSize: '0.65rem' }}>
                         {trait}
                     </span>
+                </div>
+                <div className="d-flex align-items-center gap-2 mt-2 mb-3">
+                    <span className="material-symbols-outlined fs-6 text-secondary">person</span>
+                    <span className="small text-secondary">{publisherName || 'Usuario'}</span>
+                    {publisherRole === 'HOSTEL' && (
+                        <span className="badge bg-info-subtle text-info small px-2 py-1">🏠 Albergue</span>
+                    )}
+                    {publisherRole === 'ADMIN' && (
+                        <span className="badge bg-warning-subtle text-warning small px-2 py-1">👑 Admin</span>
+                    )}
                 </div>
 
                 {/* WhatsApp Button */}
