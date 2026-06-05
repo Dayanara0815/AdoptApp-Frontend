@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL !== undefined && import.meta.env.VITE_BACKEND_URL !== ''
+  ? import.meta.env.VITE_BACKEND_URL
+  : (import.meta.env.DEV ? 'http://localhost:8080' : '');
 console.log('backend url:', BACKEND_URL);
 const api = axios.create({
-  baseURL: `${BACKEND_URL}/api/v1`,
+  baseURL: BACKEND_URL ? `${BACKEND_URL}/api/v1` : '/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -57,7 +59,9 @@ api.interceptors.response.use(
   }
 );
 
-const FILE_SERVICE_URL = import.meta.env.VITE_FILE_SERVICE_URL || 'http://localhost:7071';
+const FILE_SERVICE_URL = import.meta.env.VITE_FILE_SERVICE_URL !== undefined && import.meta.env.VITE_FILE_SERVICE_URL !== ''
+  ? import.meta.env.VITE_FILE_SERVICE_URL
+  : (import.meta.env.DEV ? 'http://localhost:7071' : '');
 
 export const fileApi = axios.create({
   baseURL: FILE_SERVICE_URL,
