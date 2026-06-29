@@ -100,8 +100,8 @@ const CatalogSidebar = ({ onFilterApply }) => {
                 <div className="mb-4">
                     <label className="form-label text-uppercase fw-bold text-on-surface-variant tracking-widest mb-3" style={{ fontSize: '0.75rem' }}>Tamaño</label>
                     <select 
-                        className="form-select bg-surface-container-lowest border-0 rounded-3 py-2 px-3 shadow-sm focus-ring text-on-surface fw-medium" 
-                        style={{ fontSize: '0.875rem', cursor: 'pointer' }}
+                        className="form-select bg-surface-container-lowest border-0 rounded-3 py-2 ps-3 pe-5 shadow-sm focus-ring text-on-surface fw-medium" 
+                        style={{ fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s' }}
                         value={localFilters.size}
                         onChange={(e) => setLocalFilters(prev => ({ ...prev, size: e.target.value }))}
                     >
