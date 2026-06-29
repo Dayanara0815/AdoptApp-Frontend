@@ -49,15 +49,109 @@ export default function Registro() {
     setError('');
 
     if (form.role === 'USER') {
-      if (!form.nombres || !form.apellidos || !form.dni || !form.fechaNacimiento) {
-        const msg = 'Por favor, completa tus nombres, apellidos, DNI y fecha de nacimiento.';
+      const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/;
+      
+      if (!form.nombres || !form.nombres.trim()) {
+        const msg = 'Por favor, ingresa tus nombres. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!nameRegex.test(form.nombres)) {
+        const msg = 'Los nombres solo pueden contener letras, espacios y la letra ñ (ej. Juan Carlos).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.apellidos || !form.apellidos.trim()) {
+        const msg = 'Por favor, ingresa tus apellidos. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!nameRegex.test(form.apellidos)) {
+        const msg = 'Los apellidos solo pueden contener letras, espacios y la letra ñ (ej. Pérez Gómez).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.dni) {
+        const msg = 'Por favor, ingresa tu DNI. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{8}$/.test(form.dni)) {
+        const msg = 'El DNI debe tener exactamente 8 dígitos numéricos (ej. 12345678).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.fechaNacimiento) {
+        const msg = 'Por favor, ingresa tu fecha de nacimiento. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      const birthDate = new Date(form.fechaNacimiento);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        const msg = 'Debes ser mayor de edad (18 años o más) para registrarte en AdoptApp.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (form.phone && !/^\d{9}$/.test(form.phone)) {
+        const msg = 'El teléfono debe tener exactamente 9 dígitos numéricos (ej. 987654321).';
         setError(msg);
         showToast(msg, 'warning');
         return;
       }
     } else if (form.role === 'HOSTEL') {
-      if (!form.hostelName || !form.phone || !form.address || !form.dni) {
-        const msg = 'Por favor, completa el nombre, DNI del representante, teléfono y dirección del albergue.';
+      if (!form.hostelName || !form.hostelName.trim()) {
+        const msg = 'Por favor, completa el nombre del albergue.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      
+      if (!form.dni) {
+        const msg = 'Por favor, ingresa el DNI del representante legal.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{8}$/.test(form.dni)) {
+        const msg = 'El DNI del representante debe tener exactamente 8 dígitos numéricos (ej. 12345678).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.phone) {
+        const msg = 'Por favor, ingresa el teléfono del albergue.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{9}$/.test(form.phone)) {
+        const msg = 'El teléfono de contacto debe tener exactamente 9 dígitos numéricos (ej. 987654321).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.address || !form.address.trim()) {
+        const msg = 'Por favor, ingresa la dirección del albergue.';
         setError(msg);
         showToast(msg, 'warning');
         return;
@@ -617,7 +711,10 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Nombres"
                           value={form.nombres}
-                          onChange={(e) => setForm({ ...form, nombres: e.target.value })}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '');
+                            setForm({ ...form, nombres: val });
+                          }}
                         />
                         <FaUser className="input-icon" />
                       </div>
@@ -626,7 +723,10 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Apellidos"
                           value={form.apellidos}
-                          onChange={(e) => setForm({ ...form, apellidos: e.target.value })}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '');
+                            setForm({ ...form, apellidos: val });
+                          }}
                         />
                         <FaUser className="input-icon" />
                       </div>
@@ -663,7 +763,11 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Teléfono (opcional)"
                           value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                          maxLength={9}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setForm({ ...form, phone: val });
+                          }}
                         />
                         <FaPhone className="input-icon" />
                       </div>
@@ -713,7 +817,11 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Teléfono de contacto"
                           value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                          maxLength={9}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setForm({ ...form, phone: val });
+                          }}
                         />
                         <FaPhone className="input-icon" />
                       </div>
