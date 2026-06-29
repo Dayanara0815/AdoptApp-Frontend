@@ -211,7 +211,7 @@ const MyPublications = () => {
                       <p className="mb-0">
                         No tienes ninguna mascota publicada todavía.
                       </p>
-                      <span className="small text-secondary">
+                      <span className="small d-block mt-1" style={{ color: 'var(--color-text-muted)', fontWeight: '500' }}>
                         ¡Haz clic en el botón de arriba para registrar tu
                         primera mascota!
                       </span>

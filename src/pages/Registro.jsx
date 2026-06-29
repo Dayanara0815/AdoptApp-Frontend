@@ -40,6 +40,15 @@ export default function Registro() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
+  const hasMinLength = form.contrasena.length >= 8;
+  const hasSpecialChar = /[\W_]/.test(form.contrasena);
+  const hasNumber = /\d/.test(form.contrasena);
+  const hasUppercase = /[A-Z]/.test(form.contrasena);
+  const isPasswordValid = hasMinLength && hasSpecialChar && hasNumber && hasUppercase;
+  const passwordsMatch = form.contrasena === form.confirmarContrasena;
+
   const handleRoleChange = (role) => {
     setForm((prev) => ({ ...prev, role }));
     setError('');
@@ -49,15 +58,109 @@ export default function Registro() {
     setError('');
 
     if (form.role === 'USER') {
-      if (!form.nombres || !form.apellidos || !form.dni || !form.fechaNacimiento) {
-        const msg = 'Por favor, completa tus nombres, apellidos, DNI y fecha de nacimiento.';
+      const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/;
+      
+      if (!form.nombres || !form.nombres.trim()) {
+        const msg = 'Por favor, ingresa tus nombres. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!nameRegex.test(form.nombres)) {
+        const msg = 'Los nombres solo pueden contener letras, espacios y la letra ñ (ej. Juan Carlos).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.apellidos || !form.apellidos.trim()) {
+        const msg = 'Por favor, ingresa tus apellidos. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!nameRegex.test(form.apellidos)) {
+        const msg = 'Los apellidos solo pueden contener letras, espacios y la letra ñ (ej. Pérez Gómez).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.dni) {
+        const msg = 'Por favor, ingresa tu DNI. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{8}$/.test(form.dni)) {
+        const msg = 'El DNI debe tener exactamente 8 dígitos numéricos (ej. 12345678).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.fechaNacimiento) {
+        const msg = 'Por favor, ingresa tu fecha de nacimiento. Este campo es obligatorio.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      const birthDate = new Date(form.fechaNacimiento);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        const msg = 'Debes ser mayor de edad (18 años o más) para registrarte en AdoptApp.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (form.phone && !/^\d{9}$/.test(form.phone)) {
+        const msg = 'El teléfono debe tener exactamente 9 dígitos numéricos (ej. 987654321).';
         setError(msg);
         showToast(msg, 'warning');
         return;
       }
     } else if (form.role === 'HOSTEL') {
-      if (!form.hostelName || !form.phone || !form.address || !form.dni) {
-        const msg = 'Por favor, completa el nombre, DNI del representante, teléfono y dirección del albergue.';
+      if (!form.hostelName || !form.hostelName.trim()) {
+        const msg = 'Por favor, completa el nombre del albergue.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      
+      if (!form.dni) {
+        const msg = 'Por favor, ingresa el DNI del representante legal.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{8}$/.test(form.dni)) {
+        const msg = 'El DNI del representante debe tener exactamente 8 dígitos numéricos (ej. 12345678).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.phone) {
+        const msg = 'Por favor, ingresa el teléfono del albergue.';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+      if (!/^\d{9}$/.test(form.phone)) {
+        const msg = 'El teléfono de contacto debe tener exactamente 9 dígitos numéricos (ej. 987654321).';
+        setError(msg);
+        showToast(msg, 'warning');
+        return;
+      }
+
+      if (!form.address || !form.address.trim()) {
+        const msg = 'Por favor, ingresa la dirección del albergue.';
         setError(msg);
         showToast(msg, 'warning');
         return;
@@ -74,6 +177,13 @@ export default function Registro() {
       const msg = 'Por favor, ingresa los campos obligatorios de acceso (correo y contraseña).';
       setError(msg);
       showToast(msg, 'warning');
+      return;
+    }
+
+    if (!isPasswordValid) {
+      const msg = 'La contraseña debe cumplir con todos los requisitos mínimos (8 caracteres, una mayúscula, un número y un carácter especial).';
+      setError(msg);
+      showToast(msg, 'error');
       return;
     }
 
@@ -531,6 +641,89 @@ export default function Registro() {
             gap: 0;
           }
         }
+
+        /* Password checklist card */
+        .password-checklist-card {
+          margin-top: 8px;
+          margin-bottom: 12px;
+          background: rgba(255, 255, 255, 0.95);
+          border: 1.5px solid #E2EAE5;
+          border-radius: 12px;
+          padding: 12px 16px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          font-size: 0.85rem;
+          color: #555;
+          animation: slideDown 0.2s ease-out;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .checklist-title {
+          font-weight: 600;
+          color: #3A5044;
+          margin-bottom: 6px;
+          display: block;
+        }
+
+        .checklist-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 4px;
+          transition: all 0.2s ease;
+        }
+
+        .checklist-item:last-child {
+          margin-bottom: 0;
+        }
+
+        .checklist-icon {
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .checklist-item.valid {
+          color: #2e7d32;
+          font-weight: 500;
+        }
+
+        .checklist-item.invalid {
+          color: #c62828;
+        }
+
+        /* Password match indicator */
+        .password-match-badge {
+          font-size: 0.8rem;
+          font-weight: 600;
+          margin-top: -8px;
+          margin-bottom: 12px;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding-left: 4px;
+          animation: fadeIn 0.2s ease;
+        }
+
+        .password-match-badge.match {
+          color: #2e7d32;
+        }
+
+        .password-match-badge.no-match {
+          color: #c62828;
+        }
       `}</style>
 
       <div className="register-wrapper">
@@ -617,7 +810,10 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Nombres"
                           value={form.nombres}
-                          onChange={(e) => setForm({ ...form, nombres: e.target.value })}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '');
+                            setForm({ ...form, nombres: val });
+                          }}
                         />
                         <FaUser className="input-icon" />
                       </div>
@@ -626,7 +822,10 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Apellidos"
                           value={form.apellidos}
-                          onChange={(e) => setForm({ ...form, apellidos: e.target.value })}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '');
+                            setForm({ ...form, apellidos: val });
+                          }}
                         />
                         <FaUser className="input-icon" />
                       </div>
@@ -663,7 +862,11 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Teléfono (opcional)"
                           value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                          maxLength={9}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setForm({ ...form, phone: val });
+                          }}
                         />
                         <FaPhone className="input-icon" />
                       </div>
@@ -713,7 +916,11 @@ export default function Registro() {
                           className="input-custom"
                           placeholder="Teléfono de contacto"
                           value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                          maxLength={9}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '');
+                            setForm({ ...form, phone: val });
+                          }}
                         />
                         <FaPhone className="input-icon" />
                       </div>
@@ -799,6 +1006,8 @@ export default function Registro() {
                     placeholder="Contraseña"
                     value={form.contrasena}
                     onChange={(e) => setForm({ ...form, contrasena: e.target.value })}
+                    onFocus={() => setIsPasswordFocused(true)}
+                    onBlur={() => setIsPasswordFocused(false)}
                   />
                   <FaLock className="input-icon" />
                   <button
@@ -810,6 +1019,29 @@ export default function Registro() {
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+
+                {/* Checklist desplegable de contraseña */}
+                {((isPasswordFocused || form.contrasena.length > 0) && !isPasswordValid) && (
+                  <div className="password-checklist-card">
+                    <span className="checklist-title">Requisitos de contraseña:</span>
+                    <div className={`checklist-item ${hasMinLength ? 'valid' : 'invalid'}`}>
+                      <span className="checklist-icon">{hasMinLength ? '✔' : '✖'}</span>
+                      <span>Mínimo 8 caracteres</span>
+                    </div>
+                    <div className={`checklist-item ${hasUppercase ? 'valid' : 'invalid'}`}>
+                      <span className="checklist-icon">{hasUppercase ? '✔' : '✖'}</span>
+                      <span>Al menos una mayúscula</span>
+                    </div>
+                    <div className={`checklist-item ${hasNumber ? 'valid' : 'invalid'}`}>
+                      <span className="checklist-icon">{hasNumber ? '✔' : '✖'}</span>
+                      <span>Al menos un número</span>
+                    </div>
+                    <div className={`checklist-item ${hasSpecialChar ? 'valid' : 'invalid'}`}>
+                      <span className="checklist-icon">{hasSpecialChar ? '✔' : '✖'}</span>
+                      <span>Al menos un carácter especial (ej. @, #, $, !)</span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="input-group-custom">
                   <input
@@ -829,6 +1061,13 @@ export default function Registro() {
                     {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                   </button>
                 </div>
+
+                {/* Comparación de coincidencia en tiempo real */}
+                {form.confirmarContrasena.length > 0 && (
+                  <div className={`password-match-badge ${passwordsMatch ? 'match' : 'no-match'}`}>
+                    <span>{passwordsMatch ? '✔ Coincide' : '✖ No coincide'}</span>
+                  </div>
+                )}
 
                 <div className="btn-flex-group">
                   <button type="button" className="btn-back-step" onClick={() => setStep(1)}>
