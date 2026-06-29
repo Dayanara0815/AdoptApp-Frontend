@@ -182,6 +182,11 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
       return;
     }
 
+    if (!formData.image) {
+      showToast('Por favor, sube una foto de la mascota. Este campo es obligatorio.', 'warning');
+      return;
+    }
+
     try {
       let mappedSpecies = 'OTHER';
       if (formData.species === 'dogs') mappedSpecies = 'DOG';
@@ -218,7 +223,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
         const newPet = {
           ...formData,
           sexo: formData.sex,
-          image: formData.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop',
+          image: formData.image,
           species: mappedSpecies,
           size: mappedSize,
           isAdopted: false,
