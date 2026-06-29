@@ -381,12 +381,14 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
                   Mascotas
                 </label>
                 <input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   className="form-control"
                   value={form.capacity || ''}
-                  onChange={(e) =>
-                    setForm({ ...form, capacity: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    setForm({ ...form, capacity: val });
+                  }}
                 />
               </div>
             </div>
@@ -553,6 +555,25 @@ const Profile = () => {
       if (!/^\d{9}$/.test(newData.phone)) {
         showToast('El teléfono de contacto debe tener exactamente 9 dígitos numéricos (ej. 987654321).', 'warning');
         return;
+      }
+
+      // Validar Nombre de Albergue y Dirección
+      if (!newData.hostelName || !newData.hostelName.trim()) {
+        showToast('Por favor, ingresa el nombre del albergue.', 'warning');
+        return;
+      }
+      if (!newData.address || !newData.address.trim()) {
+        showToast('Por favor, ingresa la dirección del albergue.', 'warning');
+        return;
+      }
+
+      // Validar Capacidad si está presente
+      if (newData.capacity) {
+        const capacityNum = parseInt(newData.capacity, 10);
+        if (isNaN(capacityNum) || capacityNum <= 0) {
+          showToast('La capacidad máxima de mascotas debe ser un número entero mayor que 0.', 'warning');
+          return;
+        }
       }
     } else {
       // Para USER el teléfono es opcional, pero si está presente, debe tener 9 dígitos
