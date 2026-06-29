@@ -17,11 +17,13 @@ import { useAuth } from '../../context/authStore';
 import { usePets } from '../../hooks/usePets';
 import { useUploadFile } from '../../hooks/useUploadFile';
 import { getPetImageUrl } from '../../lib';
+import { useToast } from '../../context/ToastContext';
 
 const PetFormModal = ({ show, onHide, editingPet }) => {
   const { user } = useAuth();
   const { createPet, updatePet, isCreating, isUpdating } = usePets();
   const { uploadFile, isUploading } = useUploadFile();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -29,6 +31,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
     age: '',
     color: '',
     size: 'Pequeño',
+    sex: 'Macho',
     description: '',
     image: '',
   });
@@ -59,6 +62,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           age: editingPet.age || '',
           color: editingPet.color || '',
           size: mappedSize,
+          sex: editingPet.sex || editingPet.sexo || 'Macho',
           description: editingPet.description || '',
           image: editingPet.image || '',
         });
@@ -70,6 +74,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           age: '',
           color: '',
           size: 'Pequeño',
+          sex: 'Macho',
           description: '',
           image: '',
         });
@@ -80,6 +85,19 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'name' || name === 'color') {
+      const filtered = value.replace(/[^a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]/g, '');
+      setFormData((prev) => ({ ...prev, [name]: filtered }));
+      return;
+    }
+
+    if (name === 'age') {
+      const filtered = value.replace(/\D/g, '').slice(0, 2);
+      setFormData((prev) => ({ ...prev, age: filtered }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -129,6 +147,46 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const nameRegex = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]+$/;
+    if (!formData.name || !formData.name.trim()) {
+      showToast('Por favor, ingresa el nombre de la mascota.', 'warning');
+      return;
+    }
+    if (!nameRegex.test(formData.name)) {
+      showToast('El nombre de la mascota solo puede contener letras y espacios.', 'warning');
+      return;
+    }
+
+    if (!formData.age) {
+      showToast('Por favor, ingresa la edad de la mascota.', 'warning');
+      return;
+    }
+    const ageNum = parseInt(formData.age, 10);
+    if (isNaN(ageNum) || ageNum <= 0 || ageNum >= 100) {
+      showToast('La edad debe ser un número entero positivo menor a 100 (entre 1 y 99 años).', 'warning');
+      return;
+    }
+
+    if (!formData.color || !formData.color.trim()) {
+      showToast('Por favor, ingresa el color de la mascota.', 'warning');
+      return;
+    }
+    if (!nameRegex.test(formData.color)) {
+      showToast('El color solo puede contener letras y espacios.', 'warning');
+      return;
+    }
+
+    if (formData.description && formData.description.length > 150) {
+      showToast('La descripción no puede superar los 150 caracteres.', 'warning');
+      return;
+    }
+
+    if (!formData.image) {
+      showToast('Por favor, sube una foto de la mascota. Este campo es obligatorio.', 'warning');
+      return;
+    }
+
     try {
       let mappedSpecies = 'OTHER';
       if (formData.species === 'dogs') mappedSpecies = 'DOG';
@@ -154,6 +212,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           id: editingPet.id || editingPet._id,
           data: {
             ...formData,
+            sexo: formData.sex,
             species: mappedSpecies,
             size: mappedSize,
             status: mappedStatus,
@@ -163,7 +222,8 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
       } else {
         const newPet = {
           ...formData,
-          image: formData.image || 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=100&h=100&fit=crop',
+          sexo: formData.sex,
+          image: formData.image,
           species: mappedSpecies,
           size: mappedSize,
           isAdopted: false,
@@ -274,7 +334,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           </Row>
 
           <Row className="g-3 mt-1">
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group>
                 <Form.Label className="fw-semibold text-dark mb-2 d-flex align-items-center gap-2 small">
                   <FaCalendarAlt style={{ color: 'var(--primary)', opacity: 0.85 }} /> Edad
@@ -284,7 +344,8 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
                   name="age"
                   value={formData.age}
                   onChange={handleChange}
-                  placeholder="Ej. 2 años"
+                  placeholder="Ej. 2"
+                  maxLength={2}
                   required
                   style={{
                     borderRadius: '12px',
@@ -297,7 +358,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
                 />
               </Form.Group>
             </Col>
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group>
                 <Form.Label className="fw-semibold text-dark mb-2 d-flex align-items-center gap-2 small">
                   <FaPalette style={{ color: 'var(--primary)', opacity: 0.85 }} /> Color
@@ -320,7 +381,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
                 />
               </Form.Group>
             </Col>
-            <Col md={4}>
+            <Col md={3}>
               <Form.Group>
                 <Form.Label className="fw-semibold text-dark mb-2 d-flex align-items-center gap-2 small">
                   <FaRulerCombined style={{ color: 'var(--primary)', opacity: 0.85 }} /> Tamaño
@@ -342,6 +403,30 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
                   <option>Pequeño</option>
                   <option>Mediano</option>
                   <option>Grande</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={3}>
+              <Form.Group>
+                <Form.Label className="fw-semibold text-dark mb-2 d-flex align-items-center gap-2 small">
+                  <FaPaw style={{ color: 'var(--primary)', opacity: 0.85 }} /> Género
+                </Form.Label>
+                <Form.Select
+                  name="sex"
+                  value={formData.sex}
+                  onChange={handleChange}
+                  style={{
+                    borderRadius: '12px',
+                    padding: '13px 16px',
+                    border: '1.5px solid var(--surface-variant)',
+                    backgroundColor: '#fafaf5',
+                    fontSize: '0.925rem',
+                    cursor: 'pointer',
+                  }}
+                  disabled={isSaving}
+                >
+                  <option value="Macho">Macho</option>
+                  <option value="Hembra">Hembra</option>
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -462,6 +547,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
               value={formData.description}
               onChange={handleChange}
               placeholder="Cuenta un poco sobre su temperamento, de dónde viene, qué le gusta hacer..."
+              maxLength={150}
               style={{
                 borderRadius: '12px',
                 padding: '14px',
@@ -471,6 +557,9 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
               }}
               disabled={isSaving}
             />
+            <div className="text-end text-muted small mt-1" style={{ fontSize: '0.75rem' }}>
+              {formData.description.length}/150 caracteres
+            </div>
           </Form.Group>
 
           <div className="d-flex gap-2 justify-content-end border-top pt-3">
