@@ -56,13 +56,17 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
         else if (editingPet.size === 'LARGE') mappedSize = 'Grande';
         else if (editingPet.size) mappedSize = editingPet.size;
 
+        let mappedSex = 'Macho';
+        const rawSex = (editingPet.sex || editingPet.sexo || '').toUpperCase();
+        if (rawSex === 'HEMBRA') mappedSex = 'Hembra';
+
         setFormData({
           name: editingPet.name || '',
           species: mappedSpecies,
           age: editingPet.age || '',
           color: editingPet.color || '',
           size: mappedSize,
-          sex: editingPet.sex || editingPet.sexo || 'Macho',
+          sex: mappedSex,
           description: editingPet.description || '',
           image: editingPet.image || '',
         });
@@ -198,6 +202,8 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
       else if (formData.size === 'Mediano') mappedSize = 'MEDIUM';
       else if (formData.size === 'Grande') mappedSize = 'LARGE';
 
+      const mappedSex = formData.sex === 'Hembra' ? 'HEMBRA' : 'MACHO';
+
       let mappedStatus = 'AVAILABLE';
       if (editingPet) {
         if (editingPet.status === 'Adoptado' || editingPet.status === 'ADOPTED') {
@@ -212,6 +218,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
           id: editingPet.id || editingPet._id,
           data: {
             ...formData,
+            sex: mappedSex,
             sexo: formData.sex,
             species: mappedSpecies,
             size: mappedSize,
@@ -222,6 +229,7 @@ const PetFormModal = ({ show, onHide, editingPet }) => {
       } else {
         const newPet = {
           ...formData,
+          sex: mappedSex,
           sexo: formData.sex,
           image: formData.image,
           species: mappedSpecies,
