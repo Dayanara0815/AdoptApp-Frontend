@@ -115,6 +115,14 @@ export const usePetsPage = (page, size, status = 'AVAILABLE', filters = {}, sear
         params.size = mappedSize;
       }
 
+      if (filters.sex && filters.sex.length === 1) {
+        params.sex = filters.sex[0] === 'Hembra' ? 'HEMBRA' : 'MACHO';
+      }
+
+      if (filters.age) {
+        params.age = filters.age;
+      }
+
       if (searchQuery) {
         params.search = searchQuery;
       }
