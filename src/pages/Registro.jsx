@@ -945,16 +945,6 @@ export default function Registro() {
                       <FaInfoCircle className="input-icon" style={{ top: '22px', transform: 'none' }} />
                     </div>
 
-                    <div className="input-group-custom">
-                      <input
-                        className="input-custom"
-                        type="number"
-                        placeholder="Capacidad máxima de mascotas (ej. 40)"
-                        value={form.capacity}
-                        onChange={(e) => setForm({ ...form, capacity: e.target.value })}
-                      />
-                      <FaHome className="input-icon" />
-                    </div>
 
                     <div className="input-row-grid">
                       <div className="input-group-custom">

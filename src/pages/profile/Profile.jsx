@@ -118,17 +118,7 @@ const ProfileView = ({ profile, onEdit }) => {
                 <div className="fs-5 fw-medium">{profile.email}</div>
               </div>
             </div>
-            <div className="col-12 col-md-6">
-              <div className="info-card">
-                <div className="text-muted small fw-bold text-uppercase mb-1">
-                  <MdPeople className="me-2 text-success" /> Capacidad de
-                  Mascotas
-                </div>
-                <div className="fs-5 fw-medium">
-                  {profile.capacity || 'No especificada'}
-                </div>
-              </div>
-            </div>
+
             <div className="col-12 col-md-6">
               <div className="info-card">
                 <div className="text-muted small fw-bold text-uppercase mb-1">
@@ -374,24 +364,7 @@ const EditView = ({ profile, onSave, onCancel, isPending = false }) => {
                 />
               </div>
             </div>
-            <div className="col-12 col-md-6">
-              <div className="form-container">
-                <label className="text-muted small fw-bold mb-2">
-                  <MdPeople className="me-2 text-success" /> Capacidad Máxima de
-                  Mascotas
-                </label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  className="form-control"
-                  value={form.capacity || ''}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '');
-                    setForm({ ...form, capacity: val });
-                  }}
-                />
-              </div>
-            </div>
+
             <div className="col-12 col-md-6">
               <div className="form-container">
                 <label className="text-muted small fw-bold mb-2">
@@ -520,7 +493,6 @@ const Profile = () => {
     // Específico de Albergues
     hostelName: session?.hostel?.hostelName || '',
     description: session?.hostel?.description || '',
-    capacity: session?.hostel?.capacity || '',
     website: session?.hostel?.website || '',
     donationLink: session?.hostel?.donationLink || '',
   };
@@ -567,14 +539,6 @@ const Profile = () => {
         return;
       }
 
-      // Validar Capacidad si está presente
-      if (newData.capacity) {
-        const capacityNum = parseInt(newData.capacity, 10);
-        if (isNaN(capacityNum) || capacityNum <= 0) {
-          showToast('La capacidad máxima de mascotas debe ser un número entero mayor que 0.', 'warning');
-          return;
-        }
-      }
     } else {
       // Para USER el teléfono es opcional, pero si está presente, debe tener 9 dígitos
       if (newData.phone && !/^\d{9}$/.test(newData.phone)) {
@@ -597,7 +561,6 @@ const Profile = () => {
         ...session?.hostel,
         hostelName: newData.hostelName,
         description: newData.description,
-        capacity: newData.capacity,
         website: newData.website,
         donationLink: newData.donationLink,
         logo: newData.avatar, // sincronizar logo

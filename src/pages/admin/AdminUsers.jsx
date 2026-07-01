@@ -513,12 +513,7 @@ const AdminUsers = () => {
                             <td className="text-muted fw-semibold py-2" style={{ width: '40%', fontSize: '0.85rem' }}>Nombre:</td>
                             <td className="text-dark py-2" style={{ fontSize: '0.85rem' }}>{selectedUser.hostel?.hostelName || 'No especificado'}</td>
                           </tr>
-                          <tr>
-                            <td className="text-muted fw-semibold py-2" style={{ fontSize: '0.85rem' }}>Capacidad:</td>
-                            <td className="text-dark py-2" style={{ fontSize: '0.85rem' }}>
-                              {selectedUser.hostel?.capacity ? `${selectedUser.hostel.capacity} mascotas` : 'No especificada'}
-                            </td>
-                          </tr>
+
                           {selectedUser.hostel?.donationLink && (
                             <tr>
                               <td className="text-muted fw-semibold py-2" style={{ fontSize: '0.85rem' }}>Donaciones:</td>
