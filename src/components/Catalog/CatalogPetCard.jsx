@@ -44,11 +44,6 @@ const PetCard = ({
                         </span>
                     </div>
                 )}
-
-                {/* Favorite Button */}
-                <button className="btn btn-light position-absolute bottom-0 end-0 m-3 rounded-circle d-flex align-items-center justify-content-center text-error shadow-sm border-0" style={{ width: '2.5rem', height: '2.5rem', zIndex: 10 }}>
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 0" }}>favorite</span>
-                </button>
             </div>
 
             {/* Card Body */}
