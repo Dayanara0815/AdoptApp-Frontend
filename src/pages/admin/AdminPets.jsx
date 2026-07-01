@@ -292,36 +292,42 @@ const AdminPets = () => {
                   </td>
                   <td className="px-4 py-3 align-middle text-end">
                     <div className="d-flex justify-content-end gap-2">
-                      <Button
-                        variant="light"
-                        size="sm"
-                        className="rounded-circle d-flex align-items-center justify-content-center border-0 bg-light"
-                        style={{ width: '32px', height: '32px' }}
-                        onClick={() => handleEdit(pet)}
-                        title="Editar mascota"
-                      >
-                        <span
-                          className="material-symbols-outlined text-dark"
-                          style={{ fontSize: '18px' }}
-                        >
-                          edit
-                        </span>
-                      </Button>
-                      <Button
-                        variant="light"
-                        size="sm"
-                        className="rounded-circle d-flex align-items-center justify-content-center border-0 bg-light text-danger"
-                        style={{ width: '32px', height: '32px' }}
-                        onClick={() => handleDeleteClick(pet)}
-                        title="Retirar mascota"
-                      >
-                        <span
-                          className="material-symbols-outlined"
-                          style={{ fontSize: '18px' }}
-                        >
-                          delete
-                        </span>
-                      </Button>
+                      {pet.status !== 'ADOPTED' && pet.status !== 'Adoptado' ? (
+                        <>
+                          <Button
+                            variant="light"
+                            size="sm"
+                            className="rounded-circle d-flex align-items-center justify-content-center border-0 bg-light"
+                            style={{ width: '32px', height: '32px' }}
+                            onClick={() => handleEdit(pet)}
+                            title="Editar mascota"
+                          >
+                            <span
+                              className="material-symbols-outlined text-dark"
+                              style={{ fontSize: '18px' }}
+                            >
+                              edit
+                            </span>
+                          </Button>
+                          <Button
+                            variant="light"
+                            size="sm"
+                            className="rounded-circle d-flex align-items-center justify-content-center border-0 bg-light text-danger"
+                            style={{ width: '32px', height: '32px' }}
+                            onClick={() => handleDeleteClick(pet)}
+                            title="Retirar mascota"
+                          >
+                            <span
+                              className="material-symbols-outlined"
+                              style={{ fontSize: '18px' }}
+                            >
+                              delete
+                            </span>
+                          </Button>
+                        </>
+                      ) : (
+                        <span className="text-muted small fw-semibold">Adoptado</span>
+                      )}
                     </div>
                   </td>
                 </tr>
