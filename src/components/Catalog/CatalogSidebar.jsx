@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CatalogSidebar = ({ onFilterApply }) => {
     const [localFilters, setLocalFilters] = useState({
@@ -7,6 +7,12 @@ const CatalogSidebar = ({ onFilterApply }) => {
         age: '',
         size: 'Todos los Tamaños'
     });
+
+    useEffect(() => {
+        if (onFilterApply) {
+            onFilterApply(localFilters);
+        }
+    }, [localFilters, onFilterApply]);
 
     const handleCheckbox = (category, value) => {
         setLocalFilters(prev => {
@@ -18,8 +24,13 @@ const CatalogSidebar = ({ onFilterApply }) => {
         });
     };
 
-    const handleApply = () => {
-        if (onFilterApply) onFilterApply(localFilters);
+    const handleClear = () => {
+        setLocalFilters({
+            species: [],
+            sex: [],
+            age: '',
+            size: 'Todos los Tamaños'
+        });
     };
 
     return (
@@ -113,11 +124,11 @@ const CatalogSidebar = ({ onFilterApply }) => {
                 </div>
 
                 <button 
-                    className="btn bg-primary text-on-primary w-100 py-3 rounded-pill fw-bold shadow-sm mt-2" 
+                    className="btn bg-surface-container-high text-on-surface-variant w-100 py-3 rounded-pill fw-bold shadow-sm mt-2 border-0" 
                     style={{ fontSize: '0.875rem' }}
-                    onClick={handleApply}
+                    onClick={handleClear}
                 >
-                    Aplicar Filtros
+                    Limpiar Filtros
                 </button>
             </div>
         </aside>
