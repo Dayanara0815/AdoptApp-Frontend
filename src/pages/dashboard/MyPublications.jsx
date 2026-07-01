@@ -261,37 +261,41 @@ const MyPublications = () => {
                       </td>
                       <td className="p-4">
                         <div className="d-flex justify-content-center gap-2">
-                          <Button
-                            variant="light"
-                            size="sm"
-                            className="text-primary rounded-pill px-3"
-                            onClick={() => handleOpenForm(pet)}
-                            title="Editar información"
-                          >
-                            <FaEdit className="me-1" /> Editar
-                          </Button>
+                          {!isAdopted ? (
+                            <>
+                              <Button
+                                variant="light"
+                                size="sm"
+                                className="text-primary rounded-pill px-3"
+                                onClick={() => handleOpenForm(pet)}
+                                title="Editar información"
+                              >
+                                <FaEdit className="me-1" /> Editar
+                              </Button>
 
-                          {!isAdopted && (
-                            <Button
-                              variant="light"
-                              size="sm"
-                              className="text-success rounded-pill px-3"
-                              onClick={() => openConfirm('adopt', pet)}
-                              title="Marcar como adoptado"
-                            >
-                              <FaCheckCircle className="me-1" /> Adoptado
-                            </Button>
+                              <Button
+                                variant="light"
+                                size="sm"
+                                className="text-success rounded-pill px-3"
+                                onClick={() => openConfirm('adopt', pet)}
+                                title="Marcar como adoptado"
+                              >
+                                <FaCheckCircle className="me-1" /> Adoptado
+                              </Button>
+
+                              <Button
+                                variant="light"
+                                size="sm"
+                                className="text-danger rounded-pill px-3"
+                                onClick={() => openConfirm('delete', pet)}
+                                title="Eliminar publicación"
+                              >
+                                <FaTrash />
+                              </Button>
+                            </>
+                          ) : (
+                            <span className="text-muted small fw-semibold">Adoptado</span>
                           )}
-
-                          <Button
-                            variant="light"
-                            size="sm"
-                            className="text-danger rounded-pill px-3"
-                            onClick={() => openConfirm('delete', pet)}
-                            title="Eliminar publicación"
-                          >
-                            <FaTrash />
-                          </Button>
                         </div>
                       </td>
                     </tr>
